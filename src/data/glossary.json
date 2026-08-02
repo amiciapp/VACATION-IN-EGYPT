@@ -1,0 +1,32 @@
+{
+  "brand_terms": {
+    "VACATION IN EGYPT": {
+      "definition": "The name of our luxury travel company, specializing in curated Egyptian experiences.",
+      "usage": "Always use in uppercase as shown. Do not translate the name itself."
+    },
+    "Antigravity": {
+      "definition": "Our signature premium animation style, characterized by smooth, floating-like transitions.",
+      "usage": "Used in developer documentation and internal brand guidelines."
+    }
+  },
+  "translations": {
+    "Red Sea": {
+      "en": "Red Sea",
+      "de": "Rotes Meer",
+      "ru": "Красное море",
+      "ar": "البحر الأحمر"
+    },
+    "Luxury": {
+      "en": "Luxury",
+      "de": "Luxus",
+      "ru": "Роскошный",
+      "ar": "فاخر"
+    },
+    "Curated": {
+      "en": "Curated",
+      "de": "Kuriert",
+      "ru": "Избранный",
+      "ar": "منسق"
+    }
+  }
+}

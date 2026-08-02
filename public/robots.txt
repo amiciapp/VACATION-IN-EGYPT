@@ -1,0 +1,25 @@
+User-agent: *
+Allow: /
+
+# Disallow admin/utility paths
+Disallow: /src/
+Disallow: /*.json$
+
+# Sitemap location
+Sitemap: https://vacationinegypt.vip/sitemap.xml
+
+# AI Crawlers (Bing AI, Google AI Overviews, GPTBot, etc.)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /

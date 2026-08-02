@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://vacationinegypt.vip/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2026-07-04</lastmod>
+  </url>
+
+  <!-- City Pages -->
+  <url>
+    <loc>https://vacationinegypt.vip/city/hurghada</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vacationinegypt.vip/city/cairo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vacationinegypt.vip/city/luxor</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vacationinegypt.vip/city/aswan</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vacationinegypt.vip/city/sharm</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vacationinegypt.vip/city/alexandria</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Transportation Page -->
+  <url>
+    <loc>https://vacationinegypt.vip/transportation</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2026-07-04</lastmod>
+  </url>
+
+  <!-- All 40 Trip Pages -->
+  <url><loc>https://vacationinegypt.vip/trip/red-sea-yacht</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/pyramids-day-trip</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/nile-cruise-luxor</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/desert-safari</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/scuba-diving</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/luxor-hot-air</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/luxury-beach-day</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/spa-wellness</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/nile-dinner-cruise</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/dolphin-house</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/kitesurfing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/bedouin-night</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/abu-simbel</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/luxor-full-day</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/private-yacht</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/alexandria-day</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/orange-bay</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/cairo-museum</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/suba-marine</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/quad-biking</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/fishing-trip</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/nile-river-kayaking</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/cairo-street-food</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/luxor-temple-night</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/red-sea-glass-boat</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/mount-sinai-sunrise</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/aswan-felucca-sail</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/karnak-sound-light</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/hurghada-city-tour</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/soma-bay-golf</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/valley-of-queens</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/saqqara-pyramids</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/khan-el-khalili-night</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/red-sea-paddleboarding</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/el-gouna-lagoon-trip</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/nubian-village-visit</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/makadi-water-world</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/st-anthony-monastery</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/red-sea-parasailing</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://vacationinegypt.vip/trip/marsa-alam-dugong</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+
+  <!-- Static Pages -->
+  <url>
+    <loc>https://vacationinegypt.vip/privacy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://vacationinegypt.vip/terms</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>
