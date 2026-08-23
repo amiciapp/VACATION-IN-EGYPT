@@ -5,11 +5,9 @@ import FloatingButtons from '@/components/FloatingButtons';
 import CustomCursor from '@/components/CustomCursor';
 import ScrollProgress from '@/components/ScrollProgress';
 import { transportationRoutes } from '@/data/transportation';
-import { trips } from '@/data/trips';
 import { whatsappNumbers } from '@/data/trips';
 import { Car, MapPin, ShieldCheck, Clock, Phone, ArrowRight, RefreshCw, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useApp } from '@/context/AppContext';
 
 export default function TransportationPage() {
   // Form State
@@ -17,7 +15,6 @@ export default function TransportationPage() {
   const [destination, setDestination] = useState('');
   const [tripType, setTripType] = useState<'one_way' | 'round_trip'>('one_way');
   const [passengers, setPassengers] = useState<number>(2);
-  const [selectedTripIds, setSelectedTripIds] = useState<string[]>([]);
   const [bags, setBags] = useState<number>(0);
   const [tripDate, setTripDate] = useState<string>('');
 
@@ -104,15 +101,6 @@ export default function TransportationPage() {
       setShowDiscountPopup(true);
     }
   }, [tripType, discountPercent]);
-
-  const totalTripPrice = useMemo(() => {
-    let sum = 0;
-    selectedTripIds.forEach(id => {
-      const t = trips.find(tr => tr.id === id);
-      if (t) sum += t.price;
-    });
-    return sum;
-  }, [selectedTripIds]);
 
   const handleBookNow = () => {
     if (!departure || !destination) {

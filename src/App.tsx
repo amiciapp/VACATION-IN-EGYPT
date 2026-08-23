@@ -15,6 +15,7 @@ const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('@/pages/TermsOfService'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 const TransportationPage = lazy(() => import('@/pages/TransportationPage'));
+const HeroPreview = lazy(() => import('@/pages/HeroPreview'));
 
 export default function App() {
   const [phase, setPhase] = useState<'loading' | 'fading' | 'done'>('loading');
@@ -54,6 +55,7 @@ export default function App() {
         <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/hero-preview" element={<HeroPreview />} />
             <Route path="/city/:cityName" element={<CityPage />} />
             <Route path="/trip/:tripId" element={<TripPage />} />
             <Route path="/transportation" element={<TransportationPage />} />

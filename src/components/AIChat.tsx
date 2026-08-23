@@ -3,7 +3,7 @@ import { useApp } from '@/context/AppContext';
 import { trips, whatsappNumbers } from '@/data/trips';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/style.css';
-import { X, Send, User, Volume2, VolumeX, Mic, MicOff, Calendar } from 'lucide-react';
+import { X, Send, User, Volume2, VolumeX, Mic, MicOff } from 'lucide-react';
 
 interface Message {
   id: string;

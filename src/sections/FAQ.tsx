@@ -33,59 +33,87 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" ref={sectionRef} className="relative py-24 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-b from-navy/30 via-transparent to-navy/30" />
+    <section id="faq" ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden">
+      {/* Background ambient lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
 
-      <div className="relative section-padding">
+      <div className="relative section-padding z-10">
+        {/* Header */}
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className="inline-flex items-center gap-2 glass px-4 py-2 rounded-full mb-4">
-            <HelpCircle className="w-4 h-4 text-gold" />
-            <span className="text-sm text-gold">{t('faq.title')}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-indigo-500/20 text-indigo-600 font-bold text-xs uppercase tracking-wider mb-4 shadow-sm">
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>Everything You Need to Know</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold text-ink mb-4">{t('faq.title')}</h2>
-          <p className="text-lg text-ink/60 max-w-2xl mx-auto">{t('faq.subtitle')}</p>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-ink mb-4 tracking-tight">
+            {t('faq.title')}
+          </h2>
+          <p className="text-base md:text-lg text-ink/70 max-w-2xl mx-auto leading-relaxed">
+            {t('faq.subtitle')}
+          </p>
         </div>
 
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`glass-card overflow-hidden transition-all duration-500 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
-              <button
-                onClick={() => setActiveIndex(activeIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-6 text-left"
-                aria-expanded={activeIndex === index}
-                aria-controls={`faq-answer-${index}`}
+        {/* FAQ Grid */}
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 items-start">
+          {faqs.map((faq, index) => {
+            const isOpen = activeIndex === index;
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.06 }}
+                className={`rounded-3xl transition-all duration-500 border overflow-hidden ${
+                  isOpen 
+                    ? 'bg-white shadow-2xl border-cyan-400/50 -translate-y-1 shadow-cyan-500/10' 
+                    : 'bg-white/80 backdrop-blur-xl border-slate-200/80 hover:border-slate-300 shadow-md hover:shadow-xl hover:-translate-y-0.5'
+                }`}
               >
-                <span className="text-lg font-semibold text-ink">{t(faq.q)}</span>
-                {activeIndex === index ? (
-                  <Minus className="w-5 h-5 text-gold" />
-                ) : (
-                  <Plus className="w-5 h-5 text-gold" />
-                )}
-              </button>
-              
-              <AnimatePresence>
-                {activeIndex === index && (
-                  <motion.div
-                    id={`faq-answer-${index}`}
-                    role="region"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="px-6 pb-6 text-ink/60 leading-relaxed border-t border-ink/5 pt-4">
-                      {t(faq.a)}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+                <button
+                  onClick={() => setActiveIndex(isOpen ? null : index)}
+                  className="w-full flex items-center justify-between p-6 text-left transition-colors"
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
+                >
+                  <span className={`text-base md:text-lg font-bold pr-4 transition-colors ${
+                    isOpen ? 'text-cyan-700' : 'text-slate-900 hover:text-cyan-600'
+                  }`}>
+                    {t(faq.q)}
+                  </span>
+                  
+                  <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 ${
+                    isOpen 
+                      ? 'bg-cyan-500 text-white rotate-180 shadow-md shadow-cyan-500/30' 
+                      : 'bg-slate-100 text-slate-600 hover:bg-cyan-50 hover:text-cyan-600'
+                  }`}>
+                    {isOpen ? (
+                      <Minus className="w-4 h-4" />
+                    ) : (
+                      <Plus className="w-4 h-4" />
+                    )}
+                  </div>
+                </button>
+                
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={`faq-answer-${index}`}
+                      role="region"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <div className="px-6 pb-6 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-4">
+                        {t(faq.a)}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

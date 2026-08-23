@@ -3,11 +3,10 @@ import type { Trip } from '@/data/trips';
 import { Calendar, Users, MessageCircle, ChevronRight, Phone } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 
-export default function BookingEngine({ trip, onClose }: { trip: Trip; onClose: () => void }) {
+export default function BookingEngine({ trip }: { trip: Trip; onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [guests, setGuests] = useState(2);
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
-  const [bookingRef] = useState(() => 'TRV-' + Math.random().toString(36).substr(2, 6).toUpperCase());
   const { formatPrice } = useApp();
 
   // Generate next 7 days for the date selector

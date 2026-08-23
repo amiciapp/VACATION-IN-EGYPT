@@ -8,6 +8,7 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  error?: Error;
 }
 
 export default class ErrorBoundary extends Component<Props, State> {
@@ -15,8 +16,8 @@ export default class ErrorBoundary extends Component<Props, State> {
     hasError: false
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true };
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -27,7 +28,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-navy flex items-center justify-center section-padding">
-          <div className="max-w-md w-full text-center">
+          <div className="max-w-xl w-full text-center">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -37,9 +38,16 @@ export default class ErrorBoundary extends Component<Props, State> {
             </motion.div>
             
             <h1 className="text-2xl font-bold text-ink mb-4">Something went wrong</h1>
-            <p className="text-ink/60 mb-8">
-              We encountered an unexpected technical issue. Our concierge has been notified.
+            <p className="text-ink/60 mb-4">
+              We encountered an unexpected technical issue.
             </p>
+
+            {this.state.error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-left text-xs font-mono mb-6 overflow-auto max-h-60">
+                <p className="font-bold mb-1">{this.state.error.message}</p>
+                <pre className="whitespace-pre-wrap">{this.state.error.stack}</pre>
+              </div>
+            )}
             
             <button
               onClick={() => window.location.reload()}
