@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '@/context/AppContext';
-import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, Send, ChevronRight, CheckCircle2, Shield, Star } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, ChevronRight, CheckCircle2, Shield, Star } from 'lucide-react';
 
 const socialLinks = [
   {
@@ -38,17 +37,7 @@ const trustBadges = [
 
 export default function Footer() {
   const { t } = useApp();
-  const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setIsSubscribed(true);
-      setEmail('');
-      setTimeout(() => setIsSubscribed(false), 5000);
-    }
-  };
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -56,23 +45,23 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #050810 0%, #080c16 50%, #020408 100%)' }}>
+    <footer className="relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #0b1736 0%, #0f2352 50%, #08132e 100%)' }}>
       {/* Ambient glow orbs */}
       <motion.div
-        animate={{ opacity: [0.04, 0.12, 0.04] }}
+        animate={{ opacity: [0.1, 0.25, 0.1] }}
         transition={{ duration: 6, repeat: Infinity }}
         className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.3), transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.35), transparent 70%)' }}
       />
       <motion.div
-        animate={{ opacity: [0.03, 0.09, 0.03] }}
+        animate={{ opacity: [0.08, 0.2, 0.08] }}
         transition={{ duration: 8, repeat: Infinity, delay: 3 }}
         className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(99,179,237,0.25), transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.35), transparent 70%)' }}
       />
 
       {/* Top glowing border */}
-      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), rgba(99,179,237,0.4), transparent)' }} />
+      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(245,158,11,0.6), rgba(6,182,212,0.6), transparent)' }} />
 
       <div className="section-padding py-16 relative">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -286,68 +275,6 @@ export default function Footer() {
                 <span className="text-white/40 text-sm">hello@vacationinegypt.com</span>
               </li>
             </ul>
-
-            {/* Newsletter - Luxury Glass Card */}
-            <div
-              className="p-5 rounded-2xl relative overflow-hidden"
-              style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(212,175,55,0.2)',
-                boxShadow: '0 0 30px rgba(212,175,55,0.06)',
-              }}
-            >
-              <div className="h-px w-full mb-4 absolute top-0 left-0" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.4), transparent)' }} />
-              <h5 className="text-white text-sm font-bold mb-3 tracking-wide">{t('footer.newsletter')}</h5>
-
-              {isSubscribed ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex items-center gap-2 text-green-400 py-3"
-                >
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-sm font-semibold">Successfully subscribed!</span>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex gap-2">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Your email"
-                    required
-                    className="flex-1 px-4 py-2.5 rounded-xl text-white text-sm placeholder:text-white/25 outline-none transition-all"
-                    style={{
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                    }}
-                    onFocus={(e) => { e.target.style.border = '1px solid rgba(212,175,55,0.5)'; }}
-                    onBlur={(e) => { e.target.style.border = '1px solid rgba(255,255,255,0.08)'; }}
-                  />
-                  <motion.button
-                    type="submit"
-                    title="Subscribe to newsletter"
-                    aria-label="Subscribe to newsletter"
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="px-4 py-2.5 rounded-xl text-white flex items-center justify-center relative overflow-hidden"
-                    style={{
-                      background: 'linear-gradient(135deg, #b8860b, #D4AF37)',
-                      boxShadow: '0 4px 20px rgba(212,175,55,0.4)',
-                    }}
-                  >
-                    {/* Shimmer */}
-                    <motion.div
-                      animate={{ x: ['-100%', '200%'] }}
-                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-                      className="absolute inset-0 pointer-events-none"
-                      style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)', transform: 'skewX(-20deg)' }}
-                    />
-                    <Send className="w-4 h-4 relative z-10" />
-                  </motion.button>
-                </form>
-              )}
-            </div>
           </div>
         </div>
 

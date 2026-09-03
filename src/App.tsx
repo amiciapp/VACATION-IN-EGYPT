@@ -1,11 +1,23 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router';
-import { AppProvider } from '@/context/AppContext';
+import { AppProvider, useApp } from '@/context/AppContext';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import LoadingScreen from '@/components/LoadingScreen';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import CookieConsent from '@/components/CookieConsent';
 import PushPermission from '@/components/PushPermission';
+import LiveBookingTicker from '@/components/LiveBookingTicker';
+import SpotlightSearch from '@/components/SpotlightSearch';
+
+function GlobalAppFeatures() {
+  const { isSearchOpen, setIsSearchOpen } = useApp();
+  return (
+    <>
+      <SpotlightSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <LiveBookingTicker />
+    </>
+  );
+}
 
 // Lazy load pages for performance scaling
 const Home = lazy(() => import('@/pages/Home'));
@@ -21,10 +33,10 @@ export default function App() {
   const [phase, setPhase] = useState<'loading' | 'fading' | 'done'>('loading');
 
   useEffect(() => {
-    // Phase 1: Show loading screen (2s)
-    const fadeTimer = setTimeout(() => setPhase('fading'), 2000);
-    // Phase 2: Fade out (0.8s transition), then remove loader
-    const doneTimer = setTimeout(() => setPhase('done'), 2800);
+    // Phase 1: Show Hollywood intro sequence (2.6s)
+    const fadeTimer = setTimeout(() => setPhase('fading'), 2600);
+    // Phase 2: Smooth cinematic dissolve & zoom out (0.8s transition)
+    const doneTimer = setTimeout(() => setPhase('done'), 3400);
 
     return () => {
       clearTimeout(fadeTimer);
@@ -43,8 +55,8 @@ export default function App() {
         {/* === LOADING OVERLAY — sits on top of everything === */}
         {phase !== 'done' && (
           <div
-            className={`fixed inset-0 z-[9999] bg-[#08080E] transition-opacity duration-700 ease-in-out ${
-              phase === 'fading' ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+            className={`fixed inset-0 z-[9999] bg-[#05070D] transition-all duration-700 ease-out ${
+              phase === 'fading' ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100 pointer-events-auto'
             }`}
           >
             <LoadingScreen />
@@ -70,6 +82,9 @@ export default function App() {
         
         {/* Push Notification Permission */}
         <PushPermission />
+
+        {/* Global Live Features: Spotlight Search & Live Booking Ticker */}
+        <GlobalAppFeatures />
       </AppProvider>
     </ErrorBoundary>
   );

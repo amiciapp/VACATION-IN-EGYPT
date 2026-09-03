@@ -30,6 +30,78 @@ export function useSEO(cityName?: string, trip?: Trip) {
     ? `${window.location.origin}${trip.image}`
     : `${window.location.origin}/images/hero-redsea.jpg`;
 
+  // Dynamic Google JSON-LD Structured Data
+  const jsonLdData: Record<string, unknown>[] = [];
+
+  if (trip) {
+    // 1. TouristTrip Schema with live Euro Price & Star Reviews
+    jsonLdData.push({
+      "@context": "https://schema.org",
+      "@type": "TouristTrip",
+      "name": trip.title,
+      "description": trip.description,
+      "image": `${window.location.origin}${trip.image}`,
+      "url": `${window.location.origin}/trip/${trip.id}`,
+      "touristType": ["Luxury", "Family", "Couples", "VIP"],
+      "offers": {
+        "@type": "Offer",
+        "price": trip.price,
+        "priceCurrency": trip.currency || "EUR",
+        "availability": "https://schema.org/InStock",
+        "validFrom": "2026-01-01",
+        "url": `${window.location.origin}/trip/${trip.id}`,
+        "seller": {
+          "@type": "TravelAgency",
+          "name": "VACATION IN EGYPT",
+          "telephone": "+201131312402",
+          "url": "https://vacationinegypt.vip"
+        }
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": trip.rating || 4.9,
+        "reviewCount": trip.reviews || 150,
+        "bestRating": 5,
+        "worstRating": 1
+      },
+      "itinerary": {
+        "@type": "ItemList",
+        "numberOfItems": trip.highlights.length,
+        "itemListElement": trip.highlights.map((h, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "name": h
+        }))
+      }
+    });
+
+    // 2. BreadcrumbList Schema
+    jsonLdData.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://vacationinegypt.vip"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": `${trip.location} Experiences`,
+          "item": `https://vacationinegypt.vip/city/${trip.location.toLowerCase().replace(/\s+/g, '-')}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": trip.title,
+          "item": `${window.location.origin}/trip/${trip.id}`
+        }
+      ]
+    });
+  }
+
   return (
     <Helmet>
       <title>{title}</title>
@@ -55,6 +127,13 @@ export function useSEO(cityName?: string, trip?: Trip) {
         <link key={l} rel="alternate" hrefLang={l} href={`${baseUrl}?lang=${l}`} />
       ))}
       <link rel="alternate" hrefLang="x-default" href={baseUrl} />
+
+      {/* Structured Data Scripts */}
+      {jsonLdData.map((schemaObj, index) => (
+        <script key={index} type="application/ld+json">
+          {JSON.stringify(schemaObj)}
+        </script>
+      ))}
     </Helmet>
   );
 }

@@ -155,9 +155,16 @@ export default function Trips() {
           </p>
         </div>
 
-        {/* Map Preview */}
-        <div className="mb-16">
-          <EgyptMap />
+        {/* Map Explorer with dynamic city filter link */}
+        <div className="mb-14">
+          <EgyptMap
+            selectedCity={activeCity !== 'All' ? activeCity : undefined}
+            onSelectCity={(city) => {
+              setFilterMode('city');
+              setActiveCity(city);
+              setActiveCategory('All');
+            }}
+          />
         </div>
 
         {/* Filter Toggle */}
@@ -194,11 +201,11 @@ export default function Trips() {
             onClick={() => { setActiveCategory('All'); setActiveCity('All'); }}
             className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
               activeCategory === 'All' && activeCity === 'All'
-                ? 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white shadow-lg shadow-slate-900/25 scale-105'
-                : 'glass text-ink/75 hover:text-ink hover:bg-white/80 hover:scale-102 border border-slate-200/60 shadow-sm'
+                ? 'bg-gradient-to-r from-cyan-600 via-teal-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30 scale-105'
+                : 'glass text-ink/75 hover:text-ink hover:bg-white/90 hover:scale-102 border border-slate-200/80 shadow-sm'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
             {t('trips.filter.all')}
           </button>
           

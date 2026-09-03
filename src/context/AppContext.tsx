@@ -14,6 +14,8 @@ interface AppContextType {
   setIsChatOpen: (open: boolean) => void;
   isWhatsAppOpen: boolean;
   setIsWhatsAppOpen: (open: boolean) => void;
+  isSearchOpen: boolean;
+  setIsSearchOpen: (open: boolean) => void;
   selectedTrip: string | null;
   setSelectedTrip: (trip: string | null) => void;
   weather: { temp: number; condition: string; seaTemp: number };
@@ -25,9 +27,10 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const { t: i18nT, i18n } = useTranslation();
-  const [currency, setCurrencyState] = useState('USD');
+  const [currency, setCurrencyState] = useState('EUR');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
   const [weather, setWeather] = useState({ temp: 28, condition: 'Sunny', seaTemp: 24 });
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -36,7 +39,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedCurr = localStorage.getItem('vacationinegypt-currency');
     const savedWishlist = localStorage.getItem('vacationinegypt-wishlist');
-    if (savedCurr) setCurrencyState(savedCurr);
+    if (savedCurr && savedCurr !== 'USD') {
+      setCurrencyState(savedCurr);
+    } else {
+      setCurrencyState('EUR');
+      localStorage.setItem('vacationinegypt-currency', 'EUR');
+    }
     if (savedWishlist) {
       try { setWishlist(JSON.parse(savedWishlist)); } catch (e) {
         console.warn('Failed to parse wishlist from localStorage:', e);
@@ -75,12 +83,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(weatherInterval);
   }, []);
 
-  // Fetch Live Exchange Rates Every Hour
+  // Fetch Live Exchange Rates Every Hour (EUR Base)
   useEffect(() => {
     const fetchRates = async () => {
       try {
         // Fetching from a free, reliable public API that updates frequently
-        const response = await fetch('https://open.er-api.com/v6/latest/USD');
+        const response = await fetch('https://open.er-api.com/v6/latest/EUR');
         const data = await response.json();
         if (data && data.rates) {
           setLiveRates(data.rates);
@@ -116,7 +124,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const fallbackRate = currencies.find(c => c.code === currency)?.rate || 1;
   const exchangeRate = liveRates[currency] || fallbackRate;
-  const currencySymbol = currencies.find(c => c.code === currency)?.symbol || '$';
+  const currencySymbol = currencies.find(c => c.code === currency)?.symbol || '€';
 
   const formatPrice = useCallback((price: number) => {
     const converted = Math.round(price * exchangeRate);
@@ -134,6 +142,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       exchangeRate, formatPrice, t,
       isChatOpen, setIsChatOpen,
       isWhatsAppOpen, setIsWhatsAppOpen,
+      isSearchOpen, setIsSearchOpen,
       selectedTrip, setSelectedTrip,
       weather, wishlist, toggleWishlist
     }}>

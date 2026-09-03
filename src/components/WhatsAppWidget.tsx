@@ -53,7 +53,7 @@ export default function WhatsAppWidget() {
         trip: selectedTripData?.title || 'General Enquiry',
         travelers: formData.travelers,
         value: selectedTripData?.price ? (selectedTripData.price * formData.travelers) : 0,
-        currency: 'USD'
+        currency: 'EUR'
       });
     }
     

@@ -50,12 +50,12 @@ const TrustBadges = memo(function TrustBadges() {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover opacity-25"
+          className="w-full h-full object-cover opacity-40 brightness-110"
         >
           <source src="/videos/sitebg.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950" />
+        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-md" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-transparent to-slate-900/60" />
       </div>
 
       <div className="relative section-padding max-w-7xl mx-auto z-10">
@@ -70,16 +70,16 @@ const TrustBadges = memo(function TrustBadges() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.08 }}
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="group relative rounded-3xl p-6 bg-slate-900/70 backdrop-blur-2xl border border-white/10 hover:border-white/25 shadow-xl transition-all duration-300 flex items-center gap-4 cursor-pointer overflow-hidden"
+                className="group relative rounded-3xl p-6 bg-white/15 hover:bg-white/25 backdrop-blur-2xl border border-white/25 hover:border-cyan-400/50 shadow-xl transition-all duration-300 flex items-center gap-4 cursor-pointer overflow-hidden"
               >
                 <div className={`w-13 h-13 rounded-2xl bg-gradient-to-r ${badge.gradient} p-3 flex items-center justify-center shrink-0 shadow-lg ${badge.shadow} group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                   <Icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-white font-bold text-sm mb-1 group-hover:text-cyan-300 transition-colors">
+                  <h4 className="text-white font-bold text-sm mb-1 group-hover:text-cyan-200 transition-colors drop-shadow-sm">
                     {badge.title}
                   </h4>
-                  <p className="text-slate-400 text-xs font-medium">
+                  <p className="text-slate-200 text-xs font-medium">
                     {badge.desc}
                   </p>
                 </div>
@@ -89,10 +89,10 @@ const TrustBadges = memo(function TrustBadges() {
         </div>
 
         {/* Partners Row */}
-        <div className="mt-12 pt-10 border-t border-white/10 flex flex-col items-center">
+        <div className="mt-12 pt-10 border-t border-white/15 flex flex-col items-center">
           <div className="flex items-center gap-2 mb-6">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <p className="text-slate-400 text-[11px] uppercase tracking-[0.25em] font-extrabold">
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <p className="text-slate-300 text-[11px] uppercase tracking-[0.25em] font-extrabold">
               Global Trust & Verified Excellence
             </p>
           </div>
@@ -100,12 +100,12 @@ const TrustBadges = memo(function TrustBadges() {
             {partners.map((partner, pIdx) => (
               <div 
                 key={pIdx} 
-                className="group flex flex-col items-center px-4 py-2 rounded-2xl bg-white/5 border border-white/10 hover:border-cyan-400/40 hover:bg-white/10 backdrop-blur-md transition-all duration-300 hover:scale-105 cursor-pointer"
+                className="group flex flex-col items-center px-5 py-2.5 rounded-2xl bg-white/10 border border-white/20 hover:border-amber-400/60 hover:bg-white/20 backdrop-blur-md transition-all duration-300 hover:scale-105 cursor-pointer shadow-md"
               >
-                <span className="text-base sm:text-lg font-black text-white group-hover:text-cyan-300 transition-colors">
+                <span className="text-base sm:text-lg font-black text-white group-hover:text-cyan-200 transition-colors drop-shadow-sm">
                   {partner.name}
                 </span>
-                <span className="text-[10px] text-amber-400 font-bold mt-0.5">
+                <span className="text-[10px] text-amber-300 font-bold mt-0.5">
                   {partner.rating}
                 </span>
               </div>

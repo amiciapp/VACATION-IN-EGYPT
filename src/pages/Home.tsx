@@ -32,19 +32,19 @@ export default function Home() {
       <ScrollProgress />
       
       {/* Global Fixed Video Background */}
-      <div className="fixed inset-0 z-[-2] bg-black">
+      <div className="fixed inset-0 z-[-2] bg-gradient-to-b from-[#0a192f] via-[#0f2847] to-[#0a192f]">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover brightness-105 contrast-105"
           poster="/images/hero-redsea.jpg"
         >
           <source src="/videos/vacation.mp4" type="video/mp4" />
         </video>
-        {/* Subtle dark gradient to maintain minimal text readability, but removed the heavy masks/filters */}
-        <div className="absolute inset-0 bg-black/20" />
+        {/* Subtle luminous ambient gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-sky-950/20 via-transparent to-slate-950/30" />
       </div>
 
       <Navigation />
