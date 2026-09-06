@@ -16,7 +16,7 @@ import { useSEO } from '@/hooks/useSEO';
 export default function TripPage() {
   const { tripId } = useParams();
   const navigate = useNavigate();
-  const { formatPrice, wishlist, toggleWishlist, setIsWhatsAppOpen, setSelectedTrip } = useApp();
+  const { t, formatPrice, wishlist, toggleWishlist, setIsWhatsAppOpen, setSelectedTrip } = useApp();
   const [activeImg, setActiveImg] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
@@ -83,7 +83,7 @@ export default function TripPage() {
               className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-white/80 hover:text-white transition-all text-xs font-semibold uppercase tracking-widest group"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform text-gold" />
-              <span>Back to all experiences</span>
+              <span>{t('trip.backToTrips') || 'Back to all experiences'}</span>
             </Link>
 
             <div className="flex items-center gap-3">
@@ -99,7 +99,7 @@ export default function TripPage() {
               >
                 <Heart className={`w-4 h-4 ${wishlist.includes(trip.id) ? 'fill-current text-red-400' : ''}`} />
                 <span className="hidden sm:inline">
-                  {wishlist.includes(trip.id) ? 'Saved' : 'Save'}
+                  {wishlist.includes(trip.id) ? (t('wishlist.saved') || 'Saved') : (t('wishlist.save') || 'Save')}
                 </span>
               </button>
             </div>
@@ -120,13 +120,13 @@ export default function TripPage() {
                   <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.05] border border-white/10 text-xs font-bold text-amber-300">
                     <Star className="w-3.5 h-3.5 fill-current text-amber-400" />
                     <span>{trip.rating}</span>
-                    <span className="text-white/40 font-normal">({trip.reviews} reviews)</span>
+                    <span className="text-white/40 font-normal">({trip.reviews} {t('trip.reviews') || 'reviews'})</span>
                   </div>
 
                   {trip.hot && (
                     <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider">
                       <Zap className="w-3.5 h-3.5 fill-current" />
-                      Best Seller
+                      {t('trips.hot') || 'Best Seller'}
                     </span>
                   )}
                 </div>
@@ -230,7 +230,7 @@ export default function TripPage() {
               {/* QUICK KEY STATS GRID (4 Cards) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
                 <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">Duration</span>
+                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">{t('trips.duration') || 'Duration'}</span>
                   <div className="flex items-center gap-2 text-gold">
                     <Clock className="w-4 h-4" />
                     <span className="text-sm font-bold text-white">{trip.duration}</span>
@@ -238,7 +238,7 @@ export default function TripPage() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">Location</span>
+                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">{t('trip.location') || 'Location'}</span>
                   <div className="flex items-center gap-2 text-gold">
                     <MapPin className="w-4 h-4" />
                     <span className="text-sm font-bold text-white">{trip.location}</span>
@@ -246,7 +246,7 @@ export default function TripPage() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">Group Size</span>
+                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">{t('trip.groupSize') || 'Group Size'}</span>
                   <div className="flex items-center gap-2 text-gold">
                     <Users className="w-4 h-4" />
                     <span className="text-sm font-bold text-white">{trip.groupSize}</span>
@@ -254,7 +254,7 @@ export default function TripPage() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md">
-                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">Availability</span>
+                  <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold block mb-1.5">{t('trip.availability') || 'Availability'}</span>
                   <div className="flex items-center gap-2 text-gold">
                     <Calendar className="w-4 h-4" />
                     <span className="text-sm font-bold text-white">{trip.availability}</span>
@@ -266,7 +266,7 @@ export default function TripPage() {
               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2.5">
                   <Sparkles className="w-5 h-5 text-gold" />
-                  Key Highlights & Sightseeing
+                  {t('trip.highlights') || 'Key Highlights & Sightseeing'}
                 </h3>
 
                 <div className="grid sm:grid-cols-2 gap-3.5">
@@ -294,7 +294,7 @@ export default function TripPage() {
               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl space-y-6">
                 <h3 className="text-xl font-bold text-white flex items-center gap-2.5">
                   <Compass className="w-5 h-5 text-gold" />
-                  Experience Overview & Itinerary
+                  {t('trip.details') || 'Experience Overview & Itinerary'}
                 </h3>
 
                 {itineraryDays ? (
@@ -345,7 +345,7 @@ export default function TripPage() {
               <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
                 <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2.5">
                   <Award className="w-5 h-5 text-gold" />
-                  What's Included in this Tour
+                  {t('trip.included') || "What's Included in this Tour"}
                 </h3>
 
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -373,13 +373,13 @@ export default function TripPage() {
                   <div className="flex items-end justify-between mb-4">
                     <div>
                       <span className="text-[11px] font-bold uppercase tracking-widest text-gold/80 block mb-1">
-                        Guaranteed Price
+                        {t('trip.priceGuarantee') || 'Guaranteed Price'}
                       </span>
                       <div className="flex items-baseline gap-2">
                         <span className="text-4xl font-black text-white tracking-tight">
                           {formatPrice(trip.price)}
                         </span>
-                        <span className="text-xs text-white/50 font-semibold">/ person</span>
+                        <span className="text-xs text-white/50 font-semibold">{t('trip.perPerson') || '/ person'}</span>
                       </div>
                     </div>
 
@@ -434,10 +434,10 @@ export default function TripPage() {
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <span className="text-xs uppercase tracking-widest text-gold font-bold block mb-1">Explore More</span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white">Similar Top Experiences</h2>
+                  <h2 className="text-2xl sm:text-3xl font-black text-white">{t('trip.similar') || 'Similar Top Experiences'}</h2>
                 </div>
                 <Link to="/" className="text-xs uppercase tracking-wider text-gold hover:text-white font-bold transition-colors">
-                  View All →
+                  {t('common.viewAll') || 'View All →'}
                 </Link>
               </div>
 

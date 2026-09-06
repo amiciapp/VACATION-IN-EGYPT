@@ -4,7 +4,7 @@ import { useApp } from '@/context/AppContext';
 import { useTranslation } from 'react-i18next';
 import { supportedLngs } from '@/i18n';
 import { Menu, X, Phone, MessageCircle, Heart, ChevronDown, Globe, Search } from 'lucide-react';
-import { cities } from '@/data/trips';
+import { cities, languages } from '@/data/trips';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LANGUAGE_LABELS: Record<string, string> = {
@@ -112,13 +112,15 @@ export default function Navigation() {
   }, [i18n]);
 
   const navLinks = [
-    { id: 'trips', label: t('nav.trips') },
-    { id: 'transport', label: t('nav.transport') },
-    { id: 'offers', label: t('nav.offers') },
-    { id: 'planner', label: t('nav.ai.planner') },
+    { id: 'trips', label: t('nav.trips', 'Day Tours') },
+    { id: 'vip-packages', label: t('nav.vip_packages', 'VIP Packages') },
+    { id: 'custom-journey', label: t('nav.custom_journey', 'Custom Journey') },
+    { id: 'vip-fleet', label: t('nav.vip_fleet', 'Fleet & Fast-Track') },
+    { id: 'transport', label: t('nav.transport', 'Transfers') },
   ];
 
   const currentLang = i18n.language?.split('-')[0] || 'en';
+  const currentLangObj = languages.find(l => l.code === currentLang) || { code: currentLang, name: currentLang.toUpperCase(), flag: '🌐' };
 
   return (
     <nav
@@ -205,14 +207,14 @@ export default function Navigation() {
             <div className="relative" ref={langRef}>
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-extrabold text-white/90 hover:text-cyan-300 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-white/90 hover:text-cyan-300 transition-colors cursor-pointer shadow-sm"
                 aria-label="Switch language"
                 aria-haspopup="listbox"
                 aria-expanded={isLangOpen}
               >
-                <Globe className="w-3.5 h-3.5 text-cyan-400" />
-                <span>{LANGUAGE_LABELS[currentLang] || currentLang.toUpperCase()}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform ${isLangOpen ? 'rotate-180' : ''}`} />
+                <span className="text-base leading-none">{currentLangObj.flag}</span>
+                <span className="font-bold tracking-wide">{currentLangObj.name}</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform text-white/60 ${isLangOpen ? 'rotate-180' : ''}`} />
               </button>
               <AnimatePresence>
                 {isLangOpen && (
@@ -221,24 +223,33 @@ export default function Navigation() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full right-0 mt-2 w-48 bg-slate-900/95 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-2xl border border-white/15 p-2 max-h-72 overflow-y-auto"
+                    className="absolute top-full right-0 mt-2 w-60 bg-slate-900/98 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-2xl border border-white/15 p-1.5 max-h-80 overflow-y-auto"
                   >
                     <div className="grid gap-0.5" role="listbox">
-                      {supportedLngs.map((lang) => (
-                        <button
-                          key={lang}
-                          role="option"
-                          aria-selected={lang === currentLang}
-                          onClick={() => switchLanguage(lang)}
-                          className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
-                            lang === currentLang
-                              ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                              : 'text-slate-300 hover:bg-white/10 hover:text-white'
-                          }`}
-                        >
-                          {LANGUAGE_LABELS[lang] || lang.toUpperCase()}
-                        </button>
-                      ))}
+                      {languages.map((lang) => {
+                        const isSelected = lang.code === currentLang;
+                        return (
+                          <button
+                            key={lang.code}
+                            role="option"
+                            aria-selected={isSelected}
+                            onClick={() => switchLanguage(lang.code)}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-teal-500/20 to-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold'
+                                : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <span className="text-base leading-none">{lang.flag}</span>
+                              <span className="truncate">{lang.name}</span>
+                            </div>
+                            <span className="text-[10px] uppercase tracking-wider text-white/40 font-mono">
+                              {lang.code}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </motion.div>
                 )}
@@ -354,7 +365,40 @@ export default function Navigation() {
                 )}
               </div>
             ))}
-            <div className="pt-4 border-t border-white/10 space-y-3">
+            {/* Mobile Language Selector */}
+            <div className="pt-4 border-t border-white/10 space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs uppercase tracking-widest text-white/50 font-semibold flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Language</span>
+                </span>
+                <span className="text-xs text-cyan-300 font-bold flex items-center gap-1">
+                  <span>{currentLangObj.flag}</span>
+                  <span>{currentLangObj.name}</span>
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto p-1.5 bg-black/30 rounded-xl border border-white/10">
+                {languages.map((lang) => {
+                  const isSelected = lang.code === currentLang;
+                  return (
+                    <button
+                      key={lang.code}
+                      onClick={() => { switchLanguage(lang.code); setIsMobileMenuOpen(false); }}
+                      className={`flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs transition-colors text-left ${
+                        isSelected
+                          ? 'bg-gradient-to-r from-teal-500/20 to-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30'
+                          : 'text-white/70 hover:bg-white/5 hover:text-white'
+                      }`}
+                    >
+                      <span className="text-sm leading-none">{lang.flag}</span>
+                      <span className="truncate">{lang.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-2 space-y-3">
               <button
                 onClick={() => { setIsChatOpen(true); setIsMobileMenuOpen(false); }}
                 className="w-full glass py-3 rounded-lg text-white/80 flex items-center justify-center gap-2"

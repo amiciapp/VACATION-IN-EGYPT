@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Trip } from '@/data/trips';
 import { Calendar, Users, ChevronRight, Phone, CheckCircle2 } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
+import { useTranslation } from 'react-i18next';
 import { whatsappNumbers } from '@/data/trips';
 
 export default function BookingEngine({ trip }: { trip: Trip; onClose: () => void }) {
@@ -9,6 +10,8 @@ export default function BookingEngine({ trip }: { trip: Trip; onClose: () => voi
   const [guests, setGuests] = useState(2);
   const [selectedDate, setSelectedDate] = useState<number>(0);
   const { formatPrice } = useApp();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language?.split('-')[0] || 'en';
 
   const whatsappNumber = (whatsappNumbers && whatsappNumbers[0]) ? whatsappNumbers[0].replace('+', '') : '201131312402';
 
@@ -26,7 +29,7 @@ export default function BookingEngine({ trip }: { trip: Trip; onClose: () => voi
       {/* Header */}
       <div className="p-6 border-b border-white/10 bg-white/[0.03]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-bold text-white tracking-wide">Instant Reservation</h3>
+          <h3 className="text-lg font-bold text-white tracking-wide">{t('trip.bookSpot') || 'Instant Reservation'}</h3>
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gold/15 text-gold border border-gold/30">
             Step {step} of 3
           </span>
@@ -62,13 +65,13 @@ export default function BookingEngine({ trip }: { trip: Trip; onClose: () => voi
                   }`}
                 >
                   <span className="text-[10px] uppercase font-semibold opacity-70">
-                    {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                    {date.toLocaleDateString(currentLang, { weekday: 'short' })}
                   </span>
                   <span className="text-base font-bold text-white my-0.5">
                     {date.getDate()}
                   </span>
                   <span className="text-[9px] text-white/40 uppercase">
-                    {date.toLocaleDateString('en-US', { month: 'short' })}
+                    {date.toLocaleDateString(currentLang, { month: 'short' })}
                   </span>
                 </button>
               ))}
@@ -134,7 +137,7 @@ export default function BookingEngine({ trip }: { trip: Trip; onClose: () => voi
               <h4 className="text-lg font-bold text-white">Booking Summary Ready!</h4>
               <p className="text-xs text-white/60 mt-1">
                 Ready for <span className="text-gold font-semibold">{guests} {guests === 1 ? 'traveler' : 'travelers'}</span> on{' '}
-                <span className="text-white font-semibold">{dates[selectedDate || 0].toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                <span className="text-white font-semibold">{dates[selectedDate || 0].toLocaleDateString(currentLang, { weekday: 'short', month: 'short', day: 'numeric' })}</span>
               </p>
             </div>
 
@@ -158,18 +161,18 @@ export default function BookingEngine({ trip }: { trip: Trip; onClose: () => voi
             onClick={() => setStep(step + 1)}
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#b8860b] via-[#D4AF37] to-[#f3cf65] text-slate-950 font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_20px_rgba(212,175,55,0.4)]"
           >
-            {step === 1 ? 'Select Date & Continue' : 'Review & Confirm'}
+            {step === 1 ? (t('booking.selectDate') || 'Select Date & Continue') : (t('booking.review') || 'Review & Confirm')}
             <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
           <a
-            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi VACATION IN EGYPT! 🇪🇬\n\nI would like to book:\n*${trip.title}*\n\n📅 Date: ${dates[selectedDate || 0].toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}\n👥 Travelers: ${guests}\n💰 Estimated Price: ${formatPrice(total)}\n\nPlease confirm availability and details!`)}`}
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi VACATION IN EGYPT! 🇪🇬\n\nI would like to book:\n*${trip.title}*\n\n📅 Date: ${dates[selectedDate || 0].toLocaleDateString(currentLang, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}\n👥 Travelers: ${guests}\n💰 Estimated Price: ${formatPrice(total)}\n\nPlease confirm availability and details!`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#128C7E] to-[#25D366] text-white font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_20px_rgba(37,211,102,0.4)]"
           >
             <Phone className="w-4 h-4" />
-            Book Instantly on WhatsApp
+            {t('booking.whatsapp') || 'Book Instantly on WhatsApp'}
           </a>
         )}
       </div>

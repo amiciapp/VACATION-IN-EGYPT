@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router';
 import { useApp } from '@/context/AppContext';
 import { Mail, Phone, MapPin, Instagram, Facebook, Youtube, ChevronRight, CheckCircle2, Shield, Star } from 'lucide-react';
 
@@ -37,11 +38,32 @@ const trustBadges = [
 
 export default function Footer() {
   const { t } = useApp();
+  const navigate = useNavigate();
 
+  const handleLogoClick = () => {
+    if (window.location.pathname !== '/') {
+      navigate('/');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (id === 'transportation') {
+      navigate('/transportation');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -69,10 +91,10 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <motion.button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={handleLogoClick}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="relative flex items-center gap-3 mb-6 group"
+              className="relative flex items-center gap-3 mb-6 group cursor-pointer"
             >
               {/* Logo glow backlight */}
               <motion.div
@@ -156,18 +178,18 @@ export default function Footer() {
                 backgroundClip: 'text',
               }}
             >
-              Quick Links
+              {t('footer.quickLinks') || 'Quick Links'}
             </h4>
             <ul className="space-y-3">
               {[
-                { label: 'Popular Trips', id: 'trips' },
-                { label: 'Hot Offers', id: 'offers' },
-                { label: 'Services', id: 'services' },
-                { label: 'AI Planner', id: 'planner' },
-                { label: 'Gallery', id: 'gallery' }
+                { label: t('nav.trips'), id: 'trips' },
+                { label: t('nav.offers'), id: 'offers' },
+                { label: t('nav.services'), id: 'services' },
+                { label: t('nav.ai.planner'), id: 'planner' },
+                { label: t('nav.gallery'), id: 'gallery' }
               ].map((link, i) => (
                 <motion.li
-                  key={link.label}
+                  key={link.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08 }}
@@ -201,18 +223,18 @@ export default function Footer() {
                 backgroundClip: 'text',
               }}
             >
-              Our Services
+              {t('footer.ourServices') || 'Our Services'}
             </h4>
             <ul className="space-y-3">
               {[
-                { label: 'Luxury Hotels', id: 'services' },
-                { label: 'Airport Transfers', id: 'services' },
-                { label: 'Private Tours', id: 'services' },
-                { label: 'Group Bookings', id: 'services' },
-                { label: 'VIP Concierge', id: 'services' }
+                { label: t('services.hotels') || 'Luxury Hotels', id: 'services' },
+                { label: t('nav.transport') || 'Airport Transfers', id: 'transportation' },
+                { label: t('services.privateTours') || 'Private Tours', id: 'trips' },
+                { label: t('services.groupBookings') || 'Group Bookings', id: 'services' },
+                { label: t('services.vipConcierge') || 'VIP Concierge', id: 'services' }
               ].map((link, i) => (
                 <motion.li
-                  key={link.label}
+                  key={link.id + i}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08 }}
@@ -220,7 +242,7 @@ export default function Footer() {
                   <motion.button
                     onClick={() => scrollToSection(link.id)}
                     whileHover={{ x: 5 }}
-                    className="flex items-center gap-2 text-white/40 hover:text-cyan-400 transition-colors text-sm group"
+                    className="flex items-center gap-2 text-white/40 hover:text-cyan-400 transition-colors text-sm group cursor-pointer"
                   >
                     <ChevronRight className="w-3 h-3 text-cyan-500/50 group-hover:text-cyan-400 transition-colors" />
                     {link.label}
@@ -262,7 +284,9 @@ export default function Footer() {
                 >
                   <Phone className="w-4 h-4 text-gold" />
                 </motion.div>
-                <span className="text-white/40 text-sm">+20 113 131 2402</span>
+                <a href="tel:+201131312402" className="text-white/40 hover:text-gold text-sm transition-colors">
+                  +20 113 131 2402
+                </a>
               </li>
               <li className="flex items-center gap-3 group">
                 <motion.div
@@ -272,22 +296,14 @@ export default function Footer() {
                 >
                   <Mail className="w-4 h-4 text-gold" />
                 </motion.div>
-                <span className="text-white/40 text-sm">hello@vacationinegypt.com</span>
+                <a href="mailto:hello@vacationinegypt.com" className="text-white/40 hover:text-gold text-sm transition-colors">
+                  hello@vacationinegypt.com
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Managed by */}
-        <div className="text-center mt-12 mb-6">
-          <motion.p
-            whileHover={{ scale: 1.02 }}
-            className="text-white/15 text-xs tracking-[0.3em] uppercase cursor-default transition-all duration-500 hover:text-gold/60"
-            style={{ letterSpacing: '0.25em' }}
-          >
-            VACATION IN EGYPT MANAGED AND CONTROLLED BY ALBARAA TRAVEL
-          </motion.p>
-        </div>
 
         {/* Bottom Bar */}
         <div className="pt-8 relative">
@@ -297,7 +313,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
               <p className="text-white/25 text-sm">
-                © 2026 VACATION IN EGYPT. All rights reserved.
+                © 2026 VACATION IN EGYPT. {t('footer.rights') || 'All rights reserved.'}
               </p>
 
               {/* Designer credit with flip reveal */}
@@ -337,14 +353,13 @@ export default function Footer() {
                 { label: 'Terms of Service', href: '/terms' },
                 { label: 'Cookie Policy', href: '/privacy#cookies' },
               ].map((link) => (
-                <motion.a
+                <Link
                   key={link.label}
-                  href={link.href}
-                  whileHover={{ y: -1 }}
+                  to={link.href}
                   className="text-white/30 hover:text-white/70 text-sm transition-colors duration-300"
                 >
                   {link.label}
-                </motion.a>
+                </Link>
               ))}
             </div>
           </div>

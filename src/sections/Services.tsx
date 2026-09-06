@@ -24,7 +24,7 @@ const serviceGradients = [
 ];
 
 export default function Services() {
-  const { t } = useApp();
+  const { t, setIsWhatsAppOpen } = useApp();
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -54,7 +54,7 @@ export default function Services() {
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-teal-500/10 to-blue-500/10 border border-teal-500/20 text-teal-600 font-semibold text-xs uppercase tracking-wider mb-4 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-            <span>VIP Hospitality & Concierge</span>
+            <span>{t('services.badge', 'VIP Hospitality & Concierge')}</span>
           </div>
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-ink mb-4 tracking-tight">
             {t('services.title')}
@@ -77,10 +77,14 @@ export default function Services() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                onClick={() => service.id === 'transport' && navigate('/transportation')}
-                className={`group relative rounded-3xl p-7 bg-white/90 backdrop-blur-2xl border border-slate-200/80 hover:border-transparent transition-all duration-500 ease-out hover:-translate-y-2.5 shadow-lg hover:shadow-2xl flex flex-col justify-between overflow-hidden ${
-                  service.id === 'transport' ? 'cursor-pointer' : ''
-                }`}
+                onClick={() => {
+                  if (service.id === 'transport') {
+                    navigate('/transportation');
+                  } else {
+                    setIsWhatsAppOpen(true);
+                  }
+                }}
+                className="group relative rounded-3xl p-7 bg-white/90 backdrop-blur-2xl border border-slate-200/80 hover:border-transparent transition-all duration-500 ease-out hover:-translate-y-2.5 shadow-lg hover:shadow-2xl flex flex-col justify-between overflow-hidden cursor-pointer"
               >
                 {/* Glowing Aura on Card Hover */}
                 <div className={`absolute -inset-0.5 rounded-[26px] bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 blur-md transition-all duration-500 -z-10`} />
@@ -123,7 +127,7 @@ export default function Services() {
                 {/* Footer Action */}
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-500 group-hover:text-teal-600 transition-colors">
-                    {service.id === 'transport' ? 'Book Luxury Ride' : 'Premium Standard'}
+                    {service.id === 'transport' ? t('services.bookRide', 'Book Luxury Ride') : t('services.inquire', 'Inquire via WhatsApp')}
                   </span>
                   <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-teal-500 group-hover:text-white text-slate-700 flex items-center justify-center transition-all duration-300 group-hover:translate-x-1">
                     <ArrowRight className="w-4 h-4" />

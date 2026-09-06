@@ -18,7 +18,7 @@ interface AppContextType {
   setIsSearchOpen: (open: boolean) => void;
   selectedTrip: string | null;
   setSelectedTrip: (trip: string | null) => void;
-  weather: { temp: number; condition: string; seaTemp: number };
+  weather: { temp: number; condition: string; seaTemp: number; windSpeed: number; seaStatus: string };
   wishlist: string[];
   toggleWishlist: (id: string) => void;
 }
@@ -32,14 +32,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState<string | null>(null);
-  const [weather, setWeather] = useState({ temp: 28, condition: 'Sunny', seaTemp: 24 });
+  const [weather, setWeather] = useState({
+    temp: 28,
+    condition: 'Sunny',
+    seaTemp: 24,
+    windSpeed: 14,
+    seaStatus: 'Crystal Calm'
+  });
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [liveRates, setLiveRates] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const savedCurr = localStorage.getItem('vacationinegypt-currency');
     const savedWishlist = localStorage.getItem('vacationinegypt-wishlist');
-    if (savedCurr && savedCurr !== 'USD') {
+    if (savedCurr) {
       setCurrencyState(savedCurr);
     } else {
       setCurrencyState('EUR');
@@ -65,11 +71,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           else if (w.weathercode >= 51 && w.weathercode <= 67) conditionStr = 'Rainy';
           else if (w.weathercode >= 71) conditionStr = 'Windy';
 
+          const wind = Math.round(w.windspeed || 14);
+          let seaCond = 'Crystal Calm & Smooth';
+          if (wind > 25 || w.weathercode >= 51) {
+            seaCond = 'Choppy & Rough Waves';
+          } else if (wind > 17) {
+            seaCond = 'Moderate Swell';
+          }
+
           setWeather({
             temp: Math.round(w.temperature),
             condition: conditionStr,
-            // Smart estimation for Red Sea temperature based on air temp (stays between 22-29C year round)
-            seaTemp: Math.max(22, Math.min(29, Math.round(w.temperature * 0.8 + 5))) 
+            seaTemp: Math.max(22, Math.min(29, Math.round(w.temperature * 0.8 + 5))),
+            windSpeed: wind,
+            seaStatus: seaCond
           });
         }
       } catch (e) {

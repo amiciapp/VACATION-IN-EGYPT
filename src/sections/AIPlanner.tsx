@@ -278,7 +278,7 @@ export default function AIPlanner() {
                           />
                         )}
                         <span className="mr-2 text-base">{option.icon}</span>
-                        {option.label}
+                        {t(`planner.interest.${option.id}`) || option.label}
                       </motion.button>
                     );
                   })}

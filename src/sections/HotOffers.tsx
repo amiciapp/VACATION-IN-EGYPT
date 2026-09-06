@@ -5,6 +5,7 @@ import { Clock, Flame, ChevronRight, Tag, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function CountdownTimer({ endDate }: { endDate: string }) {
+  const { t } = useApp();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -38,10 +39,10 @@ function CountdownTimer({ endDate }: { endDate: string }) {
 
   return (
     <div className="flex gap-2.5">
-      <TimeUnit value={timeLeft.days} label="Days" />
-      <TimeUnit value={timeLeft.hours} label="Hrs" />
-      <TimeUnit value={timeLeft.minutes} label="Min" />
-      <TimeUnit value={timeLeft.seconds} label="Sec" />
+      <TimeUnit value={timeLeft.days} label={t('offers.days', 'Days')} />
+      <TimeUnit value={timeLeft.hours} label={t('offers.hours', 'Hrs')} />
+      <TimeUnit value={timeLeft.minutes} label={t('offers.minutes', 'Min')} />
+      <TimeUnit value={timeLeft.seconds} label={t('offers.seconds', 'Sec')} />
     </div>
   );
 }
@@ -76,7 +77,7 @@ export default function HotOffers() {
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-red-500/10 via-orange-500/10 to-amber-500/10 border border-red-500/20 text-red-600 font-bold text-xs uppercase tracking-wider mb-4 shadow-sm">
             <Flame className="w-4 h-4 text-red-500 animate-bounce" />
-            <span>Limited Time Privileges</span>
+            <span>{t('offers.badge', 'Limited Time Privileges')}</span>
           </div>
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-ink mb-4 tracking-tight">
             {t('offers.title')}
@@ -147,7 +148,7 @@ export default function HotOffers() {
                         <span className="text-slate-400 line-through text-sm font-semibold">
                           {formatPrice(offer.originalPrice)}
                         </span>
-                        <span className="text-slate-500 text-xs font-medium">/person</span>
+                        <span className="text-slate-500 text-xs font-medium">{t('trip.perPerson', '/person')}</span>
                       </div>
 
                       <div className="mb-6">

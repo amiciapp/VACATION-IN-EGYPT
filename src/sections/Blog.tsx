@@ -23,7 +23,7 @@ export default function Blog() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-24 lg:py-32 bg-slate-950 overflow-hidden">
+    <section id="blog" ref={sectionRef} className="relative py-24 lg:py-32 bg-slate-950 overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 right-10 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
 

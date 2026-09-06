@@ -99,20 +99,23 @@ export default function CityPage() {
   const { cityName } = useParams();
   const { t, formatPrice, wishlist, toggleWishlist, setIsWhatsAppOpen, setSelectedTrip } = useApp();
 
-  const displayName = cityName ? toTitleCase(decodeURIComponent(cityName)) : '';
+  const cleanCity = cityName ? decodeURIComponent(cityName).replace(/-/g, ' ').trim() : '';
+  const searchCity = cleanCity.toLowerCase();
+  const displayName = cleanCity ? toTitleCase(cleanCity) : '';
   const seo = useSEO(displayName);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [cityName]);
 
-  const cityTrips = useMemo(() => trips.filter(trip =>
-    trip.location.toLowerCase().includes(cityName?.toLowerCase() || '') ||
-    (cityName?.toLowerCase() === 'luxor - aswan' &&
-      (trip.location.includes('Luxor') || trip.location.includes('Aswan'))) ||
-    (cityName?.toLowerCase() === 'cairo & giza' &&
-      trip.location.toLowerCase() === 'cairo')
-  ), [cityName]);
+  const cityTrips = useMemo(() => trips.filter(trip => {
+    if (!searchCity) return false;
+    const loc = trip.location.toLowerCase();
+    return loc.includes(searchCity) ||
+      searchCity.includes(loc) ||
+      (searchCity.includes('luxor') && searchCity.includes('aswan') && (loc.includes('luxor') || loc.includes('aswan'))) ||
+      ((searchCity === 'cairo' || searchCity === 'cairo & giza') && loc === 'cairo');
+  }), [searchCity]);
 
   return (
     <>

@@ -10,6 +10,10 @@ import ScrollProgress from '@/components/ScrollProgress';
 import { useSEO } from '@/hooks/useSEO';
 
 // Lazy load non-critical sections for performance
+const MomentsStories = lazy(() => import('@/components/MomentsStories'));
+const VIPPackages = lazy(() => import('@/sections/VIPPackages'));
+const CustomJourneyBuilder = lazy(() => import('@/sections/CustomJourneyBuilder'));
+const VIPFleetFastTrack = lazy(() => import('@/sections/VIPFleetFastTrack'));
 const HotOffers = lazy(() => import('@/sections/HotOffers'));
 const AIPlanner = lazy(() => import('@/sections/AIPlanner'));
 const Gallery = lazy(() => import('@/sections/Gallery'));
@@ -51,11 +55,17 @@ export default function Home() {
       
       <main id="main-content" className="relative z-0">
         <Hero />
+        <Suspense fallback={null}>
+          <MomentsStories />
+        </Suspense>
         <TrustBadges />
         <Trips />
-        <Services />
         
         <Suspense fallback={<div className="h-96" />}>
+          <VIPPackages />
+          <CustomJourneyBuilder />
+          <VIPFleetFastTrack />
+          <Services />
           <HotOffers />
           <AIPlanner />
           <Gallery />

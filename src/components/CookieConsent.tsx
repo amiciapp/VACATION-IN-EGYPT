@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Cookie, Shield } from 'lucide-react';
+import { Link } from 'react-router';
 
 const COOKIE_KEY = 'vacation-egypt-cookie-consent';
 
@@ -48,9 +49,9 @@ export default function CookieConsent() {
                 <p className="text-white/50 text-xs leading-relaxed">
                   We use cookies to enhance your experience, remember preferences, and analyze traffic. 
                   Your privacy is respected — no data is sold to third parties.{' '}
-                  <a href="/privacy" className="text-gold/80 hover:text-gold underline-offset-2 underline">
+                  <Link to="/privacy" className="text-gold/80 hover:text-gold underline-offset-2 underline">
                     Learn more
-                  </a>
+                  </Link>
                 </p>
               </div>
               <button

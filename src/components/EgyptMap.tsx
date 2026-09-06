@@ -1,685 +1,1176 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Compass, Clock, ArrowRight, MapPin, Star, Anchor, Sun } from 'lucide-react';
-import { Link } from 'react-router';
-import { trips } from '@/data/trips';
+import React, { useState, useRef, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Compass,
+  MapPin,
+  Star,
+  Clock,
+  Sparkles,
+  ChevronRight,
+  Phone,
+  Waves,
+  Sun,
+  ShieldCheck,
+  Eye,
+  X,
+  Layers,
+  Flame,
+  ArrowUpRight
+} from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { useApp } from '@/context/AppContext';
+import { trips, type Trip } from '@/data/trips';
 
-/* ─────────────────────────────────────────────
-   DATA
-───────────────────────────────────────────── */
-interface MapCity {
+/* ─────────────────────────────────────────────────────────────
+   TYPES & DATA DEFINITIONS
+───────────────────────────────────────────────────────────── */
+
+export type LandmarkCategory = 'wonder' | 'sea' | 'desert' | 'nile';
+
+export interface FamousLandmark {
   id: string;
   name: string;
   arabicName: string;
-  x: number;
-  y: number;
-  description: string;
-  highlights: string[];
+  cityId: string;
+  cityName: string;
+  category: LandmarkCategory;
+  x: number; // 0-1000 coordinate
+  y: number; // 0-880 coordinate
   badge: string;
-  badgeIcon: React.ReactNode;
+  description: string;
+  travelTime: string;
   image: string;
-  travelTime?: string;
-  type: 'heritage' | 'coastal' | 'hub';
+  relatedTripId: string;
 }
 
-const mapCities: MapCity[] = [
-  {
-    id: 'alexandria',
-    name: 'Alexandria',
-    arabicName: 'الإسكندرية',
-    x: 28, y: 18,
-    description: 'Pearl of the Mediterranean — ancient citadel, legendary library & Corniche sunsets.',
-    highlights: ['Citadel of Qaitbay', 'Bibliotheca Alexandrina', 'Stanley Beach'],
-    badge: 'Mediterranean Coast',
-    badgeIcon: <Anchor className="w-3 h-3" />,
-    image: '/images/bibliotheca-alexandrina.jpg',
-    travelTime: 'Flight via Cairo',
-    type: 'coastal',
-  },
+export interface MapCityHub {
+  id: string;
+  name: string;
+  arabicName: string;
+  tagline: string;
+  x: number;
+  y: number;
+  type: 'heritage' | 'coastal' | 'hub';
+  image: string;
+}
+
+// Major Destination Hubs
+const mapCityHubs: MapCityHub[] = [
   {
     id: 'cairo',
     name: 'Cairo & Giza',
     arabicName: 'القاهرة والجيزة',
-    x: 35, y: 30,
-    description: 'The Last Wonder of the Ancient World — the Great Pyramids, Sphinx & Grand Egyptian Museum.',
-    highlights: ['Great Pyramids', 'Grand Egyptian Museum', 'Khan El Khalili'],
-    badge: 'Pyramids & GEM',
-    badgeIcon: <Sun className="w-3 h-3" />,
-    image: '/images/pyramids.jpg',
-    travelTime: '50m Flight · 5h VIP Coach',
+    tagline: 'The Cradle of Ancient Wonders & The Grand Egyptian Museum',
+    x: 485,
+    y: 215,
     type: 'heritage',
+    image: '/images/pyramids.jpg'
   },
   {
-    id: 'hurghada',
-    name: 'Hurghada',
-    arabicName: 'الغردقة',
-    x: 64, y: 50,
-    description: 'Red Sea Riviera HQ — private yachts, Orange Bay & vibrant coral reef diving.',
-    highlights: ['Orange Bay', 'Private Yachts', 'Coral Diving'],
-    badge: 'Red Sea HQ',
-    badgeIcon: <Anchor className="w-3 h-3" />,
-    image: '/images/hero-redsea.jpg',
-    travelTime: 'Direct Hub',
-    type: 'hub',
-  },
-  {
-    id: 'sharm-el-sheikh',
-    name: 'Sharm El Sheikh',
-    arabicName: 'شرم الشيخ',
-    x: 75, y: 40,
-    description: 'Ras Mohammed National Park, Tiran Straits & world-class dive sites.',
-    highlights: ['Ras Mohammed NP', 'Straits of Tiran', 'Blue Hole Dive'],
-    badge: 'Sinai Diving Hub',
-    badgeIcon: <Anchor className="w-3 h-3" />,
-    image: '/images/scuba-diving.jpg',
-    travelTime: 'Ferry · Short Flight',
+    id: 'alexandria',
+    name: 'Alexandria',
+    arabicName: 'الإسكندرية',
+    tagline: 'Greco-Roman Mediterranean Pearl & Legendary Ancient Library',
+    x: 425,
+    y: 110,
     type: 'coastal',
+    image: '/images/bibliotheca-alexandrina.jpg'
   },
   {
     id: 'luxor',
     name: 'Luxor',
     arabicName: 'الأقصر',
-    x: 53, y: 70,
-    description: "World's Greatest Open-Air Museum — Valley of Kings, Karnak & hot-air balloon dawns.",
-    highlights: ['Valley of the Kings', 'Karnak Temple', 'Sunrise Ballooning'],
-    badge: 'Open-Air Museum',
-    badgeIcon: <Sun className="w-3 h-3" />,
-    image: '/images/luxor-temple.jpg',
-    travelTime: '3.5h VIP Transfer',
+    tagline: "World's Greatest Open-Air Museum & The Theban Royal Tombs",
+    x: 580,
+    y: 535,
     type: 'heritage',
+    image: '/images/luxor-temple.jpg'
   },
   {
     id: 'aswan',
     name: 'Aswan',
     arabicName: 'أسوان',
-    x: 56, y: 88,
-    description: 'Philae Temple, Nubian villages & gateway to the awe-inspiring Abu Simbel.',
-    highlights: ['Philae Temple', 'Nubian Villages', 'Abu Simbel'],
-    badge: 'Nile Cruise Gateway',
-    badgeIcon: <Anchor className="w-3 h-3" />,
-    image: '/images/nile-cruise.jpg',
-    travelTime: 'Scenic Nile Cruise',
+    tagline: 'Philae Sanctuary of Isis, Nubian Islands & Abu Simbel Gateway',
+    x: 585,
+    y: 695,
     type: 'heritage',
+    image: '/images/nile-cruise.jpg'
   },
+  {
+    id: 'hurghada',
+    name: 'Hurghada',
+    arabicName: 'الغردقة',
+    tagline: 'Red Sea Riviera HQ: Private Yachts, Orange Bay & Coral Reefs',
+    x: 740,
+    y: 405,
+    type: 'hub',
+    image: '/images/hero-redsea.jpg'
+  },
+  {
+    id: 'sharm',
+    name: 'Sharm El Sheikh',
+    arabicName: 'شرم الشيخ',
+    tagline: 'Ras Mohammed Marine Sanctuary, Mount Sinai & Red Sea Diving',
+    x: 775,
+    y: 350,
+    type: 'coastal',
+    image: '/images/scuba-diving.jpg'
+  }
 ];
 
-const routes = [
-  { from: 'hurghada', to: 'cairo',           color: '#f59e0b', dashed: true  },
-  { from: 'hurghada', to: 'luxor',           color: '#f59e0b', dashed: true  },
-  { from: 'hurghada', to: 'sharm-el-sheikh', color: '#22d3ee', dashed: true  },
-  { from: 'luxor',    to: 'aswan',           color: '#38bdf8', dashed: false },
-  { from: 'cairo',    to: 'alexandria',      color: '#a78bfa', dashed: true  },
+// Most Famous Places Near Each Location (Geographically Accurate)
+const famousLandmarks: FamousLandmark[] = [
+  // ── CAIRO & GIZA REGION ──
+  {
+    id: 'giza-pyramids',
+    name: 'Great Pyramids & Sphinx',
+    arabicName: 'أهرامات الجيزة وأبو الهول',
+    cityId: 'cairo',
+    cityName: 'Cairo & Giza',
+    category: 'wonder',
+    x: 462,
+    y: 228,
+    badge: 'Sole Remaining Ancient Wonder',
+    description: 'The iconic 4,500-year-old plateau of Khufu, Khafre, Menkaure and the enigmatic limestone Sphinx.',
+    travelTime: '25 min private transfer from Cairo center',
+    image: '/images/pyramids.jpg',
+    relatedTripId: 'cairo-pyramids-grand-egyptian-museum-gem'
+  },
+  {
+    id: 'gem-museum',
+    name: 'Grand Egyptian Museum (GEM)',
+    arabicName: 'المتحف المصري الكبير',
+    cityId: 'cairo',
+    cityName: 'Cairo & Giza',
+    category: 'wonder',
+    x: 458,
+    y: 202,
+    badge: 'World’s Largest Archaeological Museum',
+    description: 'State-of-the-art billion-dollar museum showcasing the complete Tutankhamun treasure collection.',
+    travelTime: '15 min drive from Giza plateau',
+    image: '/images/trips/cairo-pyramids-grand-egyptian-museum-gem-1.jpg',
+    relatedTripId: 'cairo-pyramids-grand-egyptian-museum-gem'
+  },
+  {
+    id: 'citadel-khan',
+    name: 'Saladin Citadel & Khan El Khalili',
+    arabicName: 'قلعة صلاح الدين وخان الخليلي',
+    cityId: 'cairo',
+    cityName: 'Cairo & Giza',
+    category: 'wonder',
+    x: 508,
+    y: 218,
+    badge: 'Medieval Islamic Heritage',
+    description: 'The monumental 12th-century fortress, Ottoman Alabaster Mosque, and centuries-old artisan gold bazaar.',
+    travelTime: 'Heart of Historic Old Cairo',
+    image: '/images/citadel-saladin-cairo.jpg',
+    relatedTripId: 'cairo-pyramids-grand-egyptian-museum-gem'
+  },
+  {
+    id: 'saqqara-pyramid',
+    name: 'Saqqara Step Pyramid of Djoser',
+    arabicName: 'هرم سقارة المدرج',
+    cityId: 'cairo',
+    cityName: 'Cairo & Giza',
+    category: 'wonder',
+    x: 472,
+    y: 250,
+    badge: 'World’s Oldest Stone Monument',
+    description: 'Imhotep’s revolutionary stepped pyramid architecture dating back to Egypt’s Third Dynasty (2670 BC).',
+    travelTime: '40 min scenic countryside drive',
+    image: '/images/3.jpg',
+    relatedTripId: 'cairo-pyramids-grand-egyptian-museum-gem'
+  },
+
+  // ── ALEXANDRIA REGION ──
+  {
+    id: 'qaitbay-citadel',
+    name: 'Citadel of Qaitbay',
+    arabicName: 'قلعة قايتباي',
+    cityId: 'alexandria',
+    cityName: 'Alexandria',
+    category: 'wonder',
+    x: 412,
+    y: 98,
+    badge: 'Site of Pharos Lighthouse',
+    description: 'Formidable 15th-century maritime fortress erected directly atop the ruins of the ancient Lighthouse of Alexandria.',
+    travelTime: 'Eastern Harbor waterfront',
+    image: '/images/trips/alexandria-citadel-catacombs-library-tour-1.jpg',
+    relatedTripId: 'alexandria-citadel-catacombs-library-tour'
+  },
+  {
+    id: 'bibliotheca-alexandrina',
+    name: 'Bibliotheca Alexandrina',
+    arabicName: 'مكتبة الإسكندرية',
+    cityId: 'alexandria',
+    cityName: 'Alexandria',
+    category: 'wonder',
+    x: 432,
+    y: 104,
+    badge: 'Revived World Library',
+    description: 'Architectural masterpiece overlooking the sea, holding millions of volumes, rare manuscripts, and planetarium.',
+    travelTime: '10 min coastal drive from Citadel',
+    image: '/images/bibliotheca-alexandrina.jpg',
+    relatedTripId: 'alexandria-citadel-catacombs-library-tour'
+  },
+  {
+    id: 'kom-el-shoqafa',
+    name: 'Catacombs of Kom El Shoqafa',
+    arabicName: 'مقابر كوم الشقافة',
+    cityId: 'alexandria',
+    cityName: 'Alexandria',
+    category: 'wonder',
+    x: 418,
+    y: 118,
+    badge: 'Seven Wonders of the Middle Ages',
+    description: 'Subterranean Greco-Roman burial chambers fusing ancient Egyptian, Greek, and Roman artistic motifs.',
+    travelTime: '15 min from Alexandria Corniche',
+    image: '/images/trips/alexandria-citadel-catacombs-library-tour-2.jpg',
+    relatedTripId: 'alexandria-citadel-catacombs-library-tour'
+  },
+
+  // ── LUXOR REGION ──
+  {
+    id: 'valley-of-kings',
+    name: 'Valley of the Kings & Tutankhamun',
+    arabicName: 'وادي الملوك ومقبرة توت عنخ آمون',
+    cityId: 'luxor',
+    cityName: 'Luxor',
+    category: 'wonder',
+    x: 562,
+    y: 528,
+    badge: 'Pharaonic Royal Necropolis',
+    description: 'Hidden tombs carved into the Theban cliffs, featuring radiant golden hieroglyphic murals preserved for 3,300 years.',
+    travelTime: 'West Bank of Luxor (25 min)',
+    image: '/images/luxor-temple.jpg',
+    relatedTripId: 'luxor-valley-of-kings-karnak-private-day-tour'
+  },
+  {
+    id: 'karnak-temple',
+    name: 'Karnak Temple & Avenue of Sphinxes',
+    arabicName: 'معبد الكرنك وطريق الكباش',
+    cityId: 'luxor',
+    cityName: 'Luxor',
+    category: 'wonder',
+    x: 595,
+    y: 525,
+    badge: 'Largest Religious Sanctuary',
+    description: 'Forest of 134 towering papyrus columns in the Great Hypostyle Hall, connected to Luxor Temple by 3km of sphinxes.',
+    travelTime: 'East Bank of Luxor (10 min)',
+    image: '/images/trips/luxor-valley-of-kings-karnak-private-day-tour-1.jpg',
+    relatedTripId: 'luxor-valley-of-kings-karnak-private-day-tour'
+  },
+  {
+    id: 'hot-air-balloon',
+    name: 'Sunrise Hot Air Balloon Over Thebes',
+    arabicName: 'منطاد الأقصر الطائر فجرًا',
+    cityId: 'luxor',
+    cityName: 'Luxor',
+    category: 'wonder',
+    x: 554,
+    y: 512,
+    badge: 'Bucket-List Dawn Flight',
+    description: 'Drifting serenely at sunrise above Hatshepsut Temple, Colossi of Memnon, and the green Nile agricultural ribbon.',
+    travelTime: 'Early morning private West Bank launch',
+    image: '/images/trips/hot-air-balloon-ride-luxor-sunrise-1.jpg',
+    relatedTripId: 'hot-air-balloon-ride-luxor-sunrise'
+  },
+  {
+    id: 'hatshepsut-temple',
+    name: 'Hatshepsut Mortuary Temple',
+    arabicName: 'معبد حتشبسوت بالدير البحري',
+    cityId: 'luxor',
+    cityName: 'Luxor',
+    category: 'wonder',
+    x: 558,
+    y: 538,
+    badge: 'Female Pharaoh Cliff Masterpiece',
+    description: 'Dramatically terraced colonnaded temple carved directly into the towering limestone cliffs of Deir El Bahari.',
+    travelTime: 'West Bank (adjacent to Valley of Kings)',
+    image: '/images/4.jpg',
+    relatedTripId: 'luxor-valley-of-kings-karnak-private-day-tour'
+  },
+
+  // ── ASWAN & NUBIA REGION ──
+  {
+    id: 'abu-simbel',
+    name: 'Abu Simbel Colossal Temples',
+    arabicName: 'معابد أبو سمبل العظيمة',
+    cityId: 'aswan',
+    cityName: 'Aswan',
+    category: 'wonder',
+    x: 510,
+    y: 805,
+    badge: 'UNESCO Crown Jewel on Lake Nasser',
+    description: 'Monumental rock-cut temples of Ramses II and Queen Nefertari, rescued by UNESCO from rising Nile waters.',
+    travelTime: 'Scenic flight or VIP highway convoy',
+    image: '/images/abu-simbel.jpg',
+    relatedTripId: 'abu-simbel-day-trip-from-aswan'
+  },
+  {
+    id: 'philae-temple',
+    name: 'Philae Island Temple of Isis',
+    arabicName: 'معبد فيلة بجزيرة إيزيس',
+    cityId: 'aswan',
+    cityName: 'Aswan',
+    category: 'nile',
+    x: 588,
+    y: 712,
+    badge: 'Island Sanctuary of the Goddess',
+    description: 'Romantic Ptolemaic temple complex set on Agilkia Island, accessible only by private wooden boat.',
+    travelTime: '15 min private boat transfer',
+    image: '/images/trips/abu-simbel-day-trip-from-aswan-1.jpg',
+    relatedTripId: 'abu-simbel-day-trip-from-aswan'
+  },
+  {
+    id: 'nubian-village',
+    name: 'Nubian Heritage Villages & Felucca',
+    arabicName: 'القرية النوبية وجزر أسوان',
+    cityId: 'aswan',
+    cityName: 'Aswan',
+    category: 'nile',
+    x: 572,
+    y: 685,
+    badge: 'Authentic River Culture',
+    description: 'Vibrant indigo and saffron painted adobe houses, tame Nile crocodiles, fragrant spices, and sunset felucca sailing.',
+    travelTime: 'Gentle river boat sail past Elephantine Island',
+    image: '/images/nile-cruise.jpg',
+    relatedTripId: 'abu-simbel-day-trip-from-aswan'
+  },
+
+  // ── HURGHADA & RED SEA REGION ──
+  {
+    id: 'orange-bay',
+    name: 'Orange Bay & Giftun Islands',
+    arabicName: 'جزيرة أورانج باي وجفتون',
+    cityId: 'hurghada',
+    cityName: 'Hurghada',
+    category: 'sea',
+    x: 765,
+    y: 412,
+    badge: 'The Egyptian Maldives',
+    description: 'Powder-white sandbars, transparent turquoise shallows, overwater wooden swings, and vibrant coral gardens.',
+    travelTime: '45 min luxury catamaran cruise',
+    image: '/images/trips/orange-bay-snorkeling-trip-hurghada-1.jpg',
+    relatedTripId: 'orange-bay-snorkeling-trip-hurghada'
+  },
+  {
+    id: 'dolphin-house',
+    name: 'Dolphin House Reef Sanctuary',
+    arabicName: 'محمية بيت الدلافين',
+    cityId: 'hurghada',
+    cityName: 'Hurghada',
+    category: 'sea',
+    x: 750,
+    y: 388,
+    badge: 'Wild Spinner Dolphins',
+    description: 'Natural horseshoe reef lagoon where free pods of wild spinner dolphins congregate and swim alongside guests.',
+    travelTime: '1 hour offshore yacht voyage',
+    image: '/images/hero-redsea.jpg',
+    relatedTripId: 'orange-bay-snorkeling-trip-hurghada'
+  },
+  {
+    id: 'el-gouna',
+    name: 'El Gouna Private Yacht Marina',
+    arabicName: 'الجونة ومارينا اليخوت',
+    cityId: 'hurghada',
+    cityName: 'Hurghada',
+    category: 'sea',
+    x: 728,
+    y: 385,
+    badge: 'Venice of the Red Sea',
+    description: 'Bespoke lagoon network, world-class golf courses, gourmet waterfront dining, and VIP yacht charters.',
+    travelTime: '25 min chauffeur transfer from Hurghada',
+    image: '/images/trips/orange-bay-snorkeling-trip-hurghada-2.jpg',
+    relatedTripId: 'orange-bay-snorkeling-trip-hurghada'
+  },
+  {
+    id: 'hurghada-safari',
+    name: 'Eastern Desert Sunset Quad Oasis',
+    arabicName: 'سفاري صحراء الغردقة والعشاء البدوي',
+    cityId: 'hurghada',
+    cityName: 'Hurghada',
+    category: 'desert',
+    x: 700,
+    y: 435,
+    badge: 'Red Sea Mountain Dunes',
+    description: 'Adrenaline quad & buggy expeditions across sweeping canyons, Bedouin hospitality, camel rides, and stargazing.',
+    travelTime: '30 min into the Red Sea mountain ranges',
+    image: '/images/desert-safari.jpg',
+    relatedTripId: 'orange-bay-snorkeling-trip-hurghada'
+  },
+
+  // ── SHARM EL SHEIKH & SINAI REGION ──
+  {
+    id: 'ras-mohammed',
+    name: 'Ras Mohammed Marine National Park',
+    arabicName: 'محمية رأس محمد البحرية',
+    cityId: 'sharm',
+    cityName: 'Sharm El Sheikh',
+    category: 'sea',
+    x: 765,
+    y: 368,
+    badge: 'World’s Top 10 Coral Wall Dives',
+    description: 'Protected apex of the Sinai Peninsula where Gulfs of Suez and Aqaba converge, home to Shark & Yolanda Reefs.',
+    travelTime: '25 min by yacht or private 4x4',
+    image: '/images/scuba-diving.jpg',
+    relatedTripId: 'scuba-diving-experience-red-sea-hurghada'
+  },
+  {
+    id: 'st-catherine',
+    name: 'Saint Catherine & Mount Sinai',
+    arabicName: 'دير سانت كاترين وجبل موسى',
+    cityId: 'sharm',
+    cityName: 'Sharm El Sheikh',
+    category: 'wonder',
+    x: 755,
+    y: 285,
+    badge: 'Sacred Summit of Moses (2,285m)',
+    description: '6th-century fortress monastery of the Burning Bush, and the sacred peak where the Ten Commandments were received.',
+    travelTime: 'Scenic mountain pass journey (2.5 hours)',
+    image: '/images/5.jpg',
+    relatedTripId: 'scuba-diving-experience-red-sea-hurghada'
+  },
+  {
+    id: 'straits-of-tiran',
+    name: 'Straits of Tiran & Blue Hole',
+    arabicName: 'مضيق تيران والثقب الأزرق',
+    cityId: 'sharm',
+    cityName: 'Sharm El Sheikh',
+    category: 'sea',
+    x: 792,
+    y: 325,
+    badge: 'Legendary Coral Drop-Offs',
+    description: 'Jackson, Thomas, and Gordon Reefs boasting crystal visibility, sea turtles, manta rays, and shipwreck history.',
+    travelTime: 'Direct yacht charter from Sharm marina',
+    image: '/images/trips/orange-bay-snorkeling-trip-hurghada-3.jpg',
+    relatedTripId: 'scuba-diving-experience-red-sea-hurghada'
+  }
 ];
 
-const PIN_COLORS = {
-  heritage: {
-    dot: '#f59e0b',
-    glow: 'rgba(245,158,11,0.6)',
-    labelBg: 'rgba(245,158,11,0.12)',
-    labelBorder: 'rgba(245,158,11,0.35)',
-    labelText: '#fcd34d',
-  },
-  coastal: {
-    dot: '#22d3ee',
-    glow: 'rgba(34,211,238,0.6)',
-    labelBg: 'rgba(34,211,238,0.12)',
-    labelBorder: 'rgba(34,211,238,0.35)',
-    labelText: '#67e8f9',
-  },
-  hub: {
-    dot: '#f43f5e',
-    glow: 'rgba(244,63,94,0.7)',
-    labelBg: 'rgba(244,63,94,0.12)',
-    labelBorder: 'rgba(244,63,94,0.35)',
-    labelText: '#fda4af',
-  },
-};
-
-/* ─────────────────────────────────────────────
-   COMPONENT
-───────────────────────────────────────────── */
 interface EgyptMapProps {
   onSelectCity?: (city: string) => void;
-  selectedCity?: string;
+  selectedCity?: string | null;
 }
 
-export const EgyptMap: React.FC<EgyptMapProps> = ({ onSelectCity, selectedCity }) => {
-  const [hoveredCity, setHoveredCity] = useState<MapCity | null>(null);
-  const [activeCity, setActiveCity]   = useState<MapCity | null>(() => {
-    // Initialise from external selectedCity prop if provided
-    if (!selectedCity) return null;
-    return mapCities.find(c =>
-      c.name.toLowerCase() === selectedCity.toLowerCase() ||
-      (c.id === 'cairo' && selectedCity.toLowerCase() === 'cairo')
-    ) ?? null;
-  });
-  const shouldReduceMotion = useReducedMotion();
+/* ─────────────────────────────────────────────────────────────
+   COMPONENT IMPLEMENTATION
+───────────────────────────────────────────────────────────── */
+
+export const EgyptMap: React.FC<EgyptMapProps> = ({ onSelectCity, selectedCity: externalCity }) => {
+  const { formatPrice, setIsWhatsAppOpen } = useApp();
+  const navigate = useNavigate();
+
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [selectedLandmark, setSelectedLandmark] = useState<FamousLandmark | null>(null);
+  const [activeCityId, setActiveCityId] = useState<string | null>(externalCity?.toLowerCase() || 'cairo');
+  const [hoveredLandmark, setHoveredLandmark] = useState<FamousLandmark | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const getCityTourCount = (cityId: string) => {
-    const city = mapCities.find(c => c.id === cityId);
-    if (!city) return 0;
-    return trips.filter(t =>
-      t.location.toLowerCase() === city.name.toLowerCase() ||
-      (cityId === 'cairo' && t.location.toLowerCase() === 'cairo')
-    ).length;
+  // Filter landmarks by category
+  const filteredLandmarks = useMemo(() => {
+    if (activeCategory === 'all') return famousLandmarks;
+    return famousLandmarks.filter(l => l.category === activeCategory);
+  }, [activeCategory]);
+
+  // Current active city object
+  const currentCity = useMemo(() => {
+    return mapCityHubs.find(c => c.id === activeCityId) || mapCityHubs[0];
+  }, [activeCityId]);
+
+  // Landmarks belonging to active city
+  const cityLandmarks = useMemo(() => {
+    return famousLandmarks.filter(l => l.cityId === activeCityId);
+  }, [activeCityId]);
+
+  // Find matching trips for the selected landmark / city
+  const featuredTrip = useMemo((): Trip | undefined => {
+    if (selectedLandmark) {
+      return trips.find(t => t.id === selectedLandmark.relatedTripId) || trips[0];
+    }
+    return trips.find(t => t.location.toLowerCase().includes(currentCity.name.toLowerCase().split(' ')[0])) || trips[0];
+  }, [selectedLandmark, currentCity]);
+
+  const handleCityClick = (cityId: string) => {
+    setActiveCityId(cityId);
+    setSelectedLandmark(null);
+    if (onSelectCity) {
+      const city = mapCityHubs.find(c => c.id === cityId);
+      if (city) onSelectCity(city.name);
+    }
   };
 
-  const getCityPos = (id: string) => mapCities.find(c => c.id === id);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setActiveCity(null);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const displayCity = activeCity ?? hoveredCity;
+  const handleWhatsAppInquire = (landmarkName: string) => {
+    const text = encodeURIComponent(`Hello VACATION IN EGYPT! I am exploring your interactive map and would love VIP pricing and details for visiting: *${landmarkName}*. Please share availability!`);
+    window.open(`https://wa.me/201000000000?text=${text}`, '_blank');
+  };
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full rounded-3xl overflow-hidden border border-amber-500/20 shadow-[0_30px_80px_rgba(0,0,0,0.9)]"
-      style={{ background: 'linear-gradient(145deg, #04080f 0%, #070d1a 50%, #030608 100%)' }}
+      className="relative w-full rounded-3xl overflow-hidden border border-amber-500/25 shadow-[0_30px_90px_rgba(0,0,0,0.85)] bg-[#030712]"
     >
-      {/* ── Ambient Background ── */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* ── AMBIENT GEOGRAPHICAL AURA ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Fine coordinate cartography grid */}
         <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{ backgroundImage: 'radial-gradient(#d97706 1px, transparent 1px)', backgroundSize: '28px 28px' }}
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: 'radial-gradient(rgba(245, 158, 11, 0.8) 1px, transparent 1px)',
+            backgroundSize: '36px 36px'
+          }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_50%_40%,transparent_50%,rgba(0,0,0,0.8)_100%)]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-80 bg-amber-500/5 blur-3xl rounded-full" />
-        <div className="absolute bottom-0 right-1/4 w-2/3 h-60 bg-cyan-900/20 blur-3xl rounded-full" />
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_80%_at_50%_45%,transparent_35%,rgba(3,7,18,0.95)_100%)]" />
+
+        {/* Western Sahara Desert Gold Glow */}
+        <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-gradient-to-br from-amber-500/15 via-yellow-600/8 to-transparent rounded-full blur-[130px]" />
+
+        {/* Eastern Red Sea Turquoise Reef Glow */}
+        <div className="absolute bottom-1/4 right-10 w-[450px] h-[550px] bg-gradient-to-tl from-teal-400/15 via-cyan-500/10 to-transparent rounded-full blur-[130px]" />
+
+        {/* Mediterranean North Coast Sea Glow */}
+        <div className="absolute top-0 left-1/3 w-[500px] h-[200px] bg-cyan-500/10 rounded-full blur-[100px]" />
       </div>
 
-      {/* ── Header ── */}
-      <div className="relative z-20 flex flex-col md:flex-row md:items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-8 pb-5 border-b border-white/[0.06]">
+      {/* ── HEADER & EXPLORER CONTROLS ── */}
+      <div className="relative z-20 px-6 sm:px-8 pt-7 pb-5 border-b border-white/[0.08] bg-slate-950/60 backdrop-blur-md flex flex-col xl:flex-row xl:items-center justify-between gap-5">
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold uppercase tracking-widest mb-2"
-            style={{ background: 'rgba(245,158,11,0.08)', borderColor: 'rgba(245,158,11,0.25)', color: '#fcd34d' }}
-          >
-            <Compass className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '12s' }} />
-            <span>Interactive Egypt Cartography</span>
-          </motion.div>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs font-bold uppercase tracking-wider mb-2.5">
+            <Compass className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: '20s' }} />
+            <span>Official Egypt Cartography</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-emerald-400 font-semibold">24 Iconic Landmarks</span>
+          </div>
 
-          <motion.h3
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-2xl sm:text-3xl font-black tracking-tight text-white"
-          >
+          <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             Explore Egypt By{' '}
-            <span
-              style={{
-                background: 'linear-gradient(90deg, #fbbf24, #f59e0b, #d97706)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              Destination
+            <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-500 bg-clip-text text-transparent">
+              Destination & Famous Landmarks
             </span>
-          </motion.h3>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-slate-400 text-xs sm:text-sm mt-1.5 max-w-md"
-          >
-            Click any landmark to reveal curated VIP itineraries, private transfers & exclusive experiences.
-          </motion.p>
+          </h3>
+          <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-xl leading-relaxed">
+            Click any regional hub or landmark pin to reveal historical wonders, travel times, and matching VIP experiences.
+          </p>
         </div>
 
-        {/* Legend */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-medium"
-        >
+        {/* Category Filter Chips */}
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-slate-900/90 border border-amber-400/20 shadow-inner">
           {[
-            { color: '#f59e0b', label: 'Heritage & Temples' },
-            { color: '#22d3ee', label: 'Coastal & Sea'      },
-            { color: '#f43f5e', label: 'Operations Hub'     },
-          ].map(({ color, label }) => (
-            <div key={label} className="flex items-center gap-2 text-slate-300">
-              <span
-                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                style={{ background: color, boxShadow: `0 0 8px ${color}` }}
-              />
-              {label}
-            </div>
-          ))}
-        </motion.div>
+            { id: 'all', label: 'All Landmarks', icon: Sparkles },
+            { id: 'wonder', label: 'Ancient Wonders', icon: Star },
+            { id: 'sea', label: 'Red Sea & Diving', icon: Waves },
+            { id: 'desert', label: 'Desert Safari', icon: Sun },
+            { id: 'nile', label: 'Nile Cruises', icon: MapPin },
+          ].map(cat => {
+            const Icon = cat.icon;
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black shadow-md shadow-amber-500/30'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{cat.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* ── Map Canvas ── */}
-      <div className="relative px-4 sm:px-8 pb-6 sm:pb-8 pt-4">
-        <div
-          className="relative w-full rounded-2xl overflow-hidden border border-white/[0.05]"
-          style={{
-            aspectRatio: '16 / 9',
-            background: 'linear-gradient(160deg, #060d1e 0%, #081325 60%, #040a18 100%)',
-            boxShadow: 'inset 0 0 80px rgba(0,0,0,0.6)',
-          }}
-        >
-          {/* Scan-line texture */}
+      {/* ── DESTINATION QUICK JUMP BAR ── */}
+      <div className="relative z-20 px-6 sm:px-8 py-3 bg-slate-950/80 border-b border-white/[0.05] overflow-x-auto no-scrollbar flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-[11px] font-bold text-amber-400/80 uppercase tracking-wider mr-1">
+            Focus Region:
+          </span>
+          {mapCityHubs.map(hub => {
+            const isSelected = activeCityId === hub.id;
+            return (
+              <button
+                key={hub.id}
+                onClick={() => handleCityClick(hub.id)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-amber-400/20 text-amber-300 border border-amber-400/50 shadow-sm'
+                    : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5'
+                }`}
+              >
+                <MapPin className={`w-3 h-3 ${isSelected ? 'text-amber-400' : 'text-slate-500'}`} />
+                <span>{hub.name}</span>
+                <span className="text-[10px] text-slate-500 font-normal">({hub.arabicName})</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedLandmark && (
+          <button
+            onClick={() => setSelectedLandmark(null)}
+            className="text-[11px] text-slate-400 hover:text-amber-300 font-medium flex items-center gap-1 shrink-0 ml-3"
+          >
+            <X className="w-3 h-3" /> Clear selection
+          </button>
+        )}
+      </div>
+
+      {/* ── MAP CANVAS & LANDMARKS SVG LAYER ── */}
+      <div className="relative p-4 sm:p-6 lg:p-8 grid lg:grid-cols-12 gap-6 items-start">
+        {/* SVG Real Egypt Map Container */}
+        <div className="lg:col-span-8 relative w-full rounded-2xl overflow-hidden bg-gradient-to-b from-[#060c1c] via-[#050b18] to-[#040812] border border-white/[0.06] shadow-2xl">
+          {/* Scanline Grid */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-[0.035]"
+            className="absolute inset-0 pointer-events-none opacity-[0.03]"
             style={{
-              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,1) 2px, rgba(255,255,255,1) 3px)',
-              backgroundSize: '100% 3px',
+              backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 3px)',
+              backgroundSize: '100% 3px'
             }}
           />
 
-          {/* ── SVG Cartographic Layer ── */}
           <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
+            className="w-full h-auto aspect-[1000/880] select-none"
+            viewBox="0 0 1000 880"
+            preserveAspectRatio="xMidYMid meet"
           >
             <defs>
-              <linearGradient id="nileGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-                <stop offset="0%"   stopColor="#0369a1" stopOpacity="0.9" />
-                <stop offset="60%"  stopColor="#38bdf8" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#7dd3fc" stopOpacity="0.4" />
+              {/* Nile River Gradient */}
+              <linearGradient id="nileRealGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#0284c7" stopOpacity="0.9" />
+                <stop offset="50%" stopColor="#38bdf8" stopOpacity="0.95" />
+                <stop offset="85%" stopColor="#0ea5e9" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.8" />
               </linearGradient>
-              <linearGradient id="seaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%"   stopColor="#06b6d4" stopOpacity="0.5" />
+
+              {/* Red Sea & Mediterranean Gradient */}
+              <linearGradient id="coastalAquaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.7" />
                 <stop offset="100%" stopColor="#0284c7" stopOpacity="0.9" />
               </linearGradient>
-              <filter id="mapGlow">
-                <feGaussianBlur stdDeviation="0.8" result="coloredBlur" />
-                <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
+
+              {/* Landmark Glow Filter */}
+              <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
               </filter>
-              <style>{`
-                @keyframes dashFlow { to { stroke-dashoffset: -20; } }
-                .route-flow { animation: dashFlow 2.5s linear infinite; }
-              `}</style>
             </defs>
 
-            {/* Egypt border outline */}
-            <motion.path
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.18 }}
-              transition={{ duration: 2.5, ease: 'easeInOut' }}
-              d="M 20,12 L 62,12 L 70,22 L 80,26 L 82,38 L 76,44 L 80,60 L 78,82 L 70,96 L 56,96 L 52,88 L 46,74 L 38,50 L 28,38 L 20,32 Z"
-              fill="rgba(245,158,11,0.04)"
-              stroke="#d97706"
-              strokeWidth="0.6"
+            {/* 1. EGYPT CONTINENTAL LANDMASS SHAPE (Real Topographical Accuracy) */}
+            <path
+              d="
+                M 65,85
+                L 225,95
+                L 350,120
+                L 425,100
+                Q 465,88 515,75
+                Q 570,88 605,98
+                L 715,110
+                L 745,95
+                L 795,215
+                L 780,250
+                L 770,290
+                L 750,350
+                L 700,310
+                L 635,215
+                L 625,185
+                L 610,215
+                L 630,250
+                L 665,305
+                L 710,370
+                L 728,400
+                L 732,420
+                L 755,465
+                L 780,510
+                L 800,545
+                L 845,630
+                L 925,780
+                L 925,820
+                L 60,820
+                Z
+              "
+              fill="rgba(15, 23, 42, 0.75)"
+              stroke="rgba(245, 158, 11, 0.35)"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+              className="drop-shadow-lg"
+            />
+
+            {/* 2. SINAI PENINSULA (Real Triangle with Gulf of Suez & Gulf of Aqaba) */}
+            <path
+              d="
+                M 625,185
+                L 635,215
+                L 700,310
+                L 750,350
+                L 770,290
+                L 780,250
+                L 795,215
+                L 745,95
+                L 605,98
+                Z
+              "
+              fill="rgba(245, 158, 11, 0.04)"
+              stroke="rgba(245, 158, 11, 0.35)"
+              strokeWidth="1.2"
               strokeLinejoin="round"
             />
-            {/* Sinai Peninsula */}
-            <motion.path
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.18 }}
-              transition={{ duration: 2.5, ease: 'easeInOut', delay: 0.3 }}
-              d="M 70,22 L 80,26 L 82,38 L 76,44 L 68,38 L 65,28 Z"
-              fill="rgba(245,158,11,0.03)"
-              stroke="#d97706"
-              strokeWidth="0.6"
+
+            {/* 3. THE NILE DELTA (Lush Green Apex) */}
+            <path
+              d="
+                M 485,215
+                Q 425,160 425,100
+                Q 465,88 515,75
+                Q 570,88 605,98
+                Q 550,165 485,215
+                Z
+              "
+              fill="rgba(16, 185, 129, 0.08)"
+              stroke="rgba(16, 185, 129, 0.3)"
+              strokeWidth="1"
             />
 
-            {/* Nile River */}
-            <motion.path
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 2.8, ease: 'easeInOut', delay: 0.4 }}
-              d="M 56,88 Q 54,78 53,70 T 48,50 Q 42,38 38,32 Q 32,24 28,18"
+            {/* 4. REAL NILE RIVER COURSE (Winding from Lake Nasser to Alexandria/Damietta) */}
+            {/* Lake Nasser Base */}
+            <path
+              d="M 540,820 C 530,780 500,770 510,805 C 530,770 570,740 585,695"
               fill="none"
-              stroke="url(#nileGrad)"
-              strokeWidth="1.4"
+              stroke="#0284c7"
+              strokeWidth="5"
               strokeLinecap="round"
-              filter="url(#mapGlow)"
+              opacity="0.8"
             />
-
-            {/* Red Sea coastline */}
+            {/* Nile Main Stem: Aswan -> Luxor (Qena Bend) -> Asyut -> Cairo -> Delta */}
             <motion.path
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 3, ease: 'easeInOut', delay: 0.5 }}
-              d="M 70,22 Q 76,32 74,44 T 66,52 Q 64,62 70,74 T 80,96"
+              transition={{ duration: 2.2, ease: 'easeInOut' }}
+              d="
+                M 585,695
+                Q 580,630 575,595
+                Q 570,560 580,535
+                C 595,505 595,475 570,465
+                C 535,450 515,400 495,335
+                Q 475,270 485,215
+              "
               fill="none"
-              stroke="url(#seaGrad)"
-              strokeWidth="1.8"
-              strokeDasharray="3 2"
-              filter="url(#mapGlow)"
+              stroke="url(#nileRealGrad)"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              filter="url(#goldGlow)"
+            />
+            {/* Rosetta Branch (West) */}
+            <path
+              d="M 485,215 Q 460,150 425,100"
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.85"
+            />
+            {/* Damietta Branch (East) */}
+            <path
+              d="M 485,215 Q 530,150 605,98"
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.85"
             />
 
-            {/* Route Lines */}
-            {routes.map((route) => {
-              const a = getCityPos(route.from);
-              const b = getCityPos(route.to);
-              if (!a || !b) return null;
+            {/* 5. SUEZ CANAL (Connecting Port Said to Suez / Red Sea) */}
+            <path
+              d="M 605,98 L 625,185"
+              fill="none"
+              stroke="#22d3ee"
+              strokeWidth="1.5"
+              strokeDasharray="3 2"
+              opacity="0.7"
+            />
+
+            {/* 6. RED SEA & COASTAL WATERWAYS HIGHLIGHT */}
+            <path
+              d="
+                M 625,185
+                L 610,215
+                L 630,250
+                L 665,305
+                L 710,370
+                L 728,400
+                L 732,420
+                L 755,465
+                L 780,510
+                L 800,545
+                L 845,630
+                L 925,780
+              "
+              fill="none"
+              stroke="url(#coastalAquaGrad)"
+              strokeWidth="2"
+              opacity="0.7"
+            />
+
+            {/* 7. CONNECTING VIP TRAVEL CORRIDORS (Hurghada HQ to Pyramids / Luxor / Sinai) */}
+            {[
+              { x1: 740, y1: 405, x2: 485, y2: 215, color: '#f59e0b', label: 'VIP Air / Highway' },
+              { x1: 740, y1: 405, x2: 580, y2: 535, color: '#f59e0b', label: '3.5h VIP Chauffeur' },
+              { x1: 740, y1: 405, x2: 775, y2: 350, color: '#22d3ee', label: 'Red Sea Ferry / Cruise' },
+              { x1: 580, y1: 535, x2: 585, y2: 695, color: '#38bdf8', label: '5★ Nile Cruise Line' },
+            ].map((route, i) => (
+              <line
+                key={i}
+                x1={route.x1}
+                y1={route.y1}
+                x2={route.x2}
+                y2={route.y2}
+                stroke={route.color}
+                strokeWidth="1"
+                strokeDasharray="4 3"
+                opacity="0.45"
+              />
+            ))}
+
+            {/* 8. ACTIVE CITY CONNECTING RAYS TO NEARBY LANDMARKS */}
+            {cityLandmarks.map(landmark => {
+              const isSelected = selectedLandmark?.id === landmark.id;
+              const isHovered = hoveredLandmark?.id === landmark.id;
               return (
-                <motion.line
-                  key={`${route.from}-${route.to}`}
-                  x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                  stroke={route.color}
-                  strokeWidth="0.7"
-                  strokeDasharray={route.dashed ? '2.5 2' : '0'}
-                  strokeLinecap="round"
-                  opacity={0}
-                  className={route.dashed ? 'route-flow' : ''}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.55 }}
-                  transition={{ duration: 1, delay: 1.5 }}
-                  filter="url(#mapGlow)"
+                <line
+                  key={`ray-${landmark.id}`}
+                  x1={currentCity.x}
+                  y1={currentCity.y}
+                  x2={landmark.x}
+                  y2={landmark.y}
+                  stroke={isSelected || isHovered ? '#fbbf24' : 'rgba(245, 158, 11, 0.25)'}
+                  strokeWidth={isSelected || isHovered ? 1.5 : 0.8}
+                  strokeDasharray={isSelected || isHovered ? '0' : '2 2'}
+                  opacity={isSelected || isHovered ? 0.9 : 0.35}
                 />
               );
             })}
-          </svg>
 
-          {/* ── Compass Rose ── */}
-          <div className="absolute top-4 right-4 z-10 pointer-events-none select-none" aria-hidden="true">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-              className="relative w-14 h-14 sm:w-16 sm:h-16"
-            >
-              <div
-                className="absolute inset-0 rounded-full border"
-                style={{ borderColor: 'rgba(245,158,11,0.2)', boxShadow: '0 0 20px rgba(245,158,11,0.08) inset' }}
-              />
-              <div
-                className="absolute inset-2 rounded-full border"
-                style={{ borderColor: 'rgba(245,158,11,0.1)' }}
-              />
-              <motion.div
-                animate={shouldReduceMotion ? {} : { rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <Compass className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: 'rgba(245,158,11,0.5)' }} />
-              </motion.div>
-              {['N','S','W','E'].map((dir, i) => (
-                <span
-                  key={dir}
-                  className="absolute text-[8px] font-mono font-bold"
-                  style={{
-                    color: dir === 'N' ? '#fcd34d' : 'rgba(245,158,11,0.4)',
-                    top:    i === 0 ? '2px'   : i === 1 ? 'auto' : '50%',
-                    bottom: i === 1 ? '2px'   : 'auto',
-                    left:   i === 2 ? '2px'   : i === 3 ? 'auto' : '50%',
-                    right:  i === 3 ? '2px'   : 'auto',
-                    transform: (i === 0 || i === 1) ? 'translateX(-50%)' : 'translateY(-50%)',
-                  }}
+            {/* 9. DESTINATION HUB MARKERS (Major Cities) */}
+            {mapCityHubs.map(city => {
+              const isActive = activeCityId === city.id;
+              return (
+                <g
+                  key={city.id}
+                  onClick={() => handleCityClick(city.id)}
+                  className="cursor-pointer group"
                 >
-                  {dir}
-                </span>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* ── Scale Bar ── */}
-          <div className="absolute bottom-3 left-4 z-10 pointer-events-none select-none" aria-hidden="true">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
-              className="flex flex-col gap-0.5"
-            >
-              <div className="flex items-center gap-1">
-                <div
-                  className="w-16 h-[3px] rounded-full"
-                  style={{ background: 'linear-gradient(90deg, rgba(245,158,11,0.6) 50%, transparent 50%)', backgroundSize: '8px 100%' }}
-                />
-                <span className="text-[9px] font-mono" style={{ color: 'rgba(245,158,11,0.5)' }}>500 km</span>
-              </div>
-              <p className="text-[8px] font-mono" style={{ color: 'rgba(255,255,255,0.18)' }}>Nereus Tours · Egypt</p>
-            </motion.div>
-          </div>
-
-          {/* ── City Pins ── */}
-          {mapCities.map((city, i) => {
-            const colors    = PIN_COLORS[city.type];
-            const isActive  = activeCity?.id === city.id;
-            const isHovered = hoveredCity?.id === city.id;
-            const lit       = isActive || isHovered;
-            const tourCount = getCityTourCount(city.id);
-
-            return (
-              <motion.div
-                key={city.id}
-                className="absolute z-30 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                style={{ left: `${city.x}%`, top: `${city.y}%` }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 0.8 + i * 0.1, type: 'spring', stiffness: 200 }}
-                onMouseEnter={() => setHoveredCity(city)}
-                onMouseLeave={() => setHoveredCity(null)}
-                onClick={() => {
-                  const newActive = activeCity?.id === city.id ? null : city;
-                  setActiveCity(newActive);
-                  if (onSelectCity && newActive) onSelectCity(city.id === 'cairo' ? 'Cairo' : city.name);
-                }}
-                role="button"
-                aria-label={`Select ${city.name}`}
-                tabIndex={0}
-                onKeyDown={e => e.key === 'Enter' && e.currentTarget.click()}
-              >
-                <div className="relative flex items-center justify-center">
-                  {/* Radar ping */}
-                  <AnimatePresence>
-                    {(lit || city.type === 'hub') && (
-                      <motion.div
-                        key="ping"
-                        initial={{ scale: 0.5, opacity: 0.9 }}
-                        animate={{ scale: 3.5, opacity: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-                        className="absolute inset-0 rounded-full"
-                        style={{ background: colors.dot, filter: 'blur(1px)' }}
-                      />
-                    )}
-                  </AnimatePresence>
-
-                  {/* Glow halo */}
-                  {lit && (
-                    <motion.div
-                      initial={{ scale: 1, opacity: 0 }}
-                      animate={{ scale: 2.8, opacity: 0.18 }}
-                      className="absolute inset-0 rounded-full"
-                      style={{ background: colors.dot }}
+                  {/* Outer Pulsing Aura */}
+                  {isActive && (
+                    <circle
+                      cx={city.x}
+                      cy={city.y}
+                      r="18"
+                      fill="rgba(245, 158, 11, 0.15)"
+                      className="animate-ping"
+                      style={{ transformOrigin: `${city.x}px ${city.y}px` }}
                     />
                   )}
 
-                  {/* Pin core */}
-                  <motion.div
-                    animate={lit ? { scale: 1.35 } : { scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                    className="relative w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-[#070d1a] z-10 flex items-center justify-center"
-                    style={{
-                      background: `radial-gradient(circle at 35% 35%, #fff 0%, ${colors.dot} 65%)`,
-                      boxShadow: lit
-                        ? `0 0 0 2px ${colors.dot}, 0 0 20px ${colors.glow}`
-                        : `0 0 10px ${colors.glow}`,
-                    }}
-                  >
-                    {city.type === 'hub' && (
-                      <motion.div
-                        animate={{ scale: [1, 1.5, 1] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
-                        className="w-1.5 h-1.5 rounded-full bg-white"
-                      />
-                    )}
-                  </motion.div>
+                  {/* Outer Ring */}
+                  <circle
+                    cx={city.x}
+                    cy={city.y}
+                    r={isActive ? 12 : 9}
+                    fill="#030712"
+                    stroke={isActive ? '#fbbf24' : 'rgba(245, 158, 11, 0.6)'}
+                    strokeWidth={isActive ? 3 : 2}
+                    className="transition-all duration-300"
+                  />
 
-                  {/* Name label */}
-                  <div
-                    className="absolute left-full top-1/2 -translate-y-1/2 ml-3 whitespace-nowrap px-2.5 py-1 rounded-lg text-[11px] font-bold pointer-events-none border transition-all duration-200"
-                    style={{
-                      background: colors.labelBg,
-                      borderColor: colors.labelBorder,
-                      color: colors.labelText,
-                      backdropFilter: 'blur(12px)',
-                      opacity: lit ? 1 : 0.75,
-                      boxShadow: lit ? `0 0 16px ${colors.glow}` : 'none',
-                    }}
+                  {/* Center Dot */}
+                  <circle
+                    cx={city.x}
+                    cy={city.y}
+                    r={isActive ? 5 : 3.5}
+                    fill={isActive ? '#f59e0b' : '#fbbf24'}
+                  />
+
+                  {/* Hub City Name Label */}
+                  <text
+                    x={city.x}
+                    y={city.y - 16}
+                    textAnchor="middle"
+                    fill={isActive ? '#fbbf24' : '#ffffff'}
+                    fontSize="13"
+                    fontWeight="800"
+                    letterSpacing="0.5"
+                    className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] select-none pointer-events-none"
                   >
-                    <div className="flex items-center gap-1.5">
-                      <span>{city.name}</span>
-                      {tourCount > 0 && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-md font-mono" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                          {tourCount}
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-[9px] font-normal opacity-60 font-mono mt-0.5" style={{ fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}>
-                      {city.arabicName}
-                    </div>
+                    {city.name}
+                  </text>
+                  <text
+                    x={city.x}
+                    y={city.y - 4}
+                    textAnchor="middle"
+                    fill="rgba(252, 211, 77, 0.7)"
+                    fontSize="9"
+                    fontWeight="600"
+                    className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] select-none pointer-events-none"
+                  >
+                    {city.arabicName}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* 10. FAMOUS LANDMARKS PINS (The Requested Places) */}
+            {filteredLandmarks.map(landmark => {
+              const isSelected = selectedLandmark?.id === landmark.id;
+              const isHovered = hoveredLandmark?.id === landmark.id;
+              const isParentActive = activeCityId === landmark.cityId;
+
+              return (
+                <g
+                  key={landmark.id}
+                  onClick={() => setSelectedLandmark(landmark)}
+                  onMouseEnter={() => setHoveredLandmark(landmark)}
+                  onMouseLeave={() => setHoveredLandmark(null)}
+                  className="cursor-pointer group"
+                >
+                  {/* Highlight Aura */}
+                  {(isSelected || isHovered) && (
+                    <circle
+                      cx={landmark.x}
+                      cy={landmark.y}
+                      r="14"
+                      fill="rgba(245, 158, 11, 0.25)"
+                      className="animate-pulse"
+                    />
+                  )}
+
+                  {/* Pin Body */}
+                  <circle
+                    cx={landmark.x}
+                    cy={landmark.y}
+                    r={isSelected ? 7 : isParentActive ? 5.5 : 4.5}
+                    fill={
+                      landmark.category === 'sea'
+                        ? '#06b6d4'
+                        : landmark.category === 'desert'
+                        ? '#f97316'
+                        : landmark.category === 'nile'
+                        ? '#38bdf8'
+                        : '#f59e0b'
+                    }
+                    stroke="#030712"
+                    strokeWidth="1.5"
+                    className="transition-transform duration-200"
+                  />
+
+                  {/* Landmark Label (Always visible for active region or hovered) */}
+                  {(isParentActive || isHovered || isSelected) && (
+                    <g className="transition-opacity duration-300">
+                      <rect
+                        x={landmark.x + 8}
+                        y={landmark.y - 12}
+                        width={landmark.name.length * 6.5 + 14}
+                        height="18"
+                        rx="5"
+                        fill="rgba(3, 7, 18, 0.88)"
+                        stroke={isSelected ? '#fbbf24' : 'rgba(255, 255, 255, 0.15)'}
+                        strokeWidth="1"
+                      />
+                      <text
+                        x={landmark.x + 15}
+                        y={landmark.y + 1}
+                        fill={isSelected ? '#fde047' : '#e2e8f0'}
+                        fontSize="10"
+                        fontWeight="700"
+                        className="pointer-events-none select-none"
+                      >
+                        {landmark.name}
+                      </text>
+                    </g>
+                  )}
+                </g>
+              );
+            })}
+
+            {/* Compass Rose */}
+            <g transform="translate(920, 80) scale(0.7)">
+              <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(245, 158, 11, 0.3)" strokeWidth="1" />
+              <polygon points="0,-26 5,-6 0,0 -5,-6" fill="#f59e0b" />
+              <polygon points="0,26 5,6 0,0 -5,6" fill="rgba(245, 158, 11, 0.4)" />
+              <text x="0" y="-32" textAnchor="middle" fill="#fbbf24" fontSize="11" fontWeight="bold">N</text>
+            </g>
+          </svg>
+        </div>
+
+        {/* ── INTERACTIVE VIP SPOTLIGHT DRAWER (RIGHT PANEL) ── */}
+        <div className="lg:col-span-4 space-y-4">
+          {/* Active Landmark or Region Card */}
+          <AnimatePresence mode="wait">
+            {selectedLandmark ? (
+              <motion.div
+                key={`landmark-${selectedLandmark.id}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3 }}
+                className="rounded-2xl bg-slate-900/95 border border-amber-400/40 p-5 shadow-2xl backdrop-blur-xl relative overflow-hidden"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedLandmark(null)}
+                  className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                {/* Thumbnail Image */}
+                <div className="relative h-44 rounded-xl overflow-hidden mb-4 bg-slate-950">
+                  <img
+                    src={selectedLandmark.image}
+                    alt={selectedLandmark.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent" />
+                  <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+                    <span className="px-2.5 py-1 rounded-lg bg-amber-500/90 text-slate-950 text-[10px] font-black uppercase tracking-wider">
+                      {selectedLandmark.badge}
+                    </span>
+                    <span className="text-white text-xs font-semibold">
+                      {selectedLandmark.cityName}
+                    </span>
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
 
-          {/* ── City Detail Panel ── */}
-          <AnimatePresence mode="wait">
-            {displayCity && (
-              <motion.div
-                key={displayCity.id}
-                initial={{ opacity: 0, y: 16, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 12, scale: 0.97 }}
-                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                className="absolute bottom-4 left-4 z-40"
-                style={{ width: 'min(320px, calc(100% - 2rem))', pointerEvents: activeCity ? 'auto' : 'none' }}
-              >
-                <div
-                  className="rounded-2xl overflow-hidden"
-                  style={{
-                    background: 'linear-gradient(145deg, rgba(7,12,25,0.97) 0%, rgba(10,18,35,0.97) 100%)',
-                    border: '1px solid rgba(245,158,11,0.25)',
-                    boxShadow: '0 24px 64px rgba(0,0,0,0.85), 0 0 0 1px rgba(245,158,11,0.08) inset',
-                    backdropFilter: 'blur(20px)',
-                  }}
-                >
-                  {/* Image strip */}
-                  <div className="relative h-28 overflow-hidden">
-                    <img
-                      src={displayCity.image}
-                      alt={displayCity.name}
-                      className="w-full h-full object-cover"
-                      style={{ filter: 'brightness(0.72) saturate(1.15)' }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#07080f] via-transparent to-transparent" />
+                {/* Details */}
+                <div>
+                  <h4 className="text-lg font-bold text-white leading-snug">
+                    {selectedLandmark.name}
+                  </h4>
+                  <p className="text-amber-400 text-xs font-medium mt-0.5">
+                    {selectedLandmark.arabicName}
+                  </p>
+                  <p className="text-slate-300 text-xs mt-2.5 leading-relaxed">
+                    {selectedLandmark.description}
+                  </p>
 
-                    {/* Badge */}
-                    <div
-                      className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                      style={{
-                        background: 'rgba(0,0,0,0.6)',
-                        border: '1px solid rgba(245,158,11,0.4)',
-                        color: '#fcd34d',
-                        backdropFilter: 'blur(8px)',
-                      }}
-                    >
-                      {displayCity.badgeIcon}
-                      {displayCity.badge}
+                  <div className="flex items-center gap-2 text-slate-400 text-xs mt-3 pt-3 border-t border-slate-800">
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{selectedLandmark.travelTime}</span>
+                  </div>
+                </div>
+
+                {/* Matching VIP Trip & CTA */}
+                {featuredTrip && (
+                  <div className="mt-4 pt-3.5 border-t border-slate-800">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                        Matching Curated Trip
+                      </span>
+                      <span className="text-amber-400 font-extrabold text-xs">
+                        From {formatPrice(featuredTrip.price)}
+                      </span>
                     </div>
 
-                    {/* Tour count pill */}
-                    {getCityTourCount(displayCity.id) > 0 && (
-                      <div
-                        className="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold"
-                        style={{ background: 'rgba(245,158,11,0.92)', color: '#1a0800' }}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => navigate(`/trip/${featuredTrip.id}`)}
+                        className="flex-1 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <Star className="w-2.5 h-2.5" />
-                        {getCityTourCount(displayCity.id)} Tours
-                      </div>
-                    )}
-                  </div>
+                        <span>View Itinerary</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
 
-                  {/* Content */}
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <div>
-                        <h4 className="text-sm font-black text-white leading-tight">{displayCity.name}</h4>
-                        <p
-                          className="text-[11px] font-medium mt-0.5"
-                          style={{ color: 'rgba(245,158,11,0.7)', fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}
-                        >
-                          {displayCity.arabicName}
-                        </p>
-                      </div>
-                      {displayCity.travelTime && (
-                        <div
-                          className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] whitespace-nowrap flex-shrink-0"
-                          style={{ background: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.2)', color: '#67e8f9' }}
-                        >
-                          <Clock className="w-2.5 h-2.5" />
-                          {displayCity.travelTime}
+                      <button
+                        onClick={() => handleWhatsAppInquire(selectedLandmark.name)}
+                        className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-md shadow-emerald-900/30 cursor-pointer"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>Book on WhatsApp</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            ) : (
+              <motion.div
+                key={`city-${currentCity.id}`}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.3 }}
+                className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 shadow-2xl backdrop-blur-xl"
+              >
+                {/* City Hero Image */}
+                <div className="relative h-40 rounded-xl overflow-hidden mb-4 bg-slate-950">
+                  <img
+                    src={currentCity.image}
+                    alt={currentCity.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                  <div className="absolute bottom-3 left-3">
+                    <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-400/30 uppercase tracking-widest">
+                      Selected Region
+                    </span>
+                    <h4 className="text-xl font-black text-white mt-1">
+                      {currentCity.name}
+                    </h4>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 text-xs leading-relaxed">
+                  {currentCity.tagline}
+                </p>
+
+                {/* Famous Places List in this Region */}
+                <div className="mt-4 pt-4 border-t border-slate-800/80">
+                  <h5 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                    Famous Places Near {currentCity.name}:
+                  </h5>
+
+                  <div className="space-y-2">
+                    {cityLandmarks.map(landmark => (
+                      <button
+                        key={landmark.id}
+                        onClick={() => setSelectedLandmark(landmark)}
+                        className="w-full text-left p-2.5 rounded-xl bg-slate-950/80 hover:bg-amber-400/10 border border-slate-800/80 hover:border-amber-400/40 transition-all flex items-center justify-between group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                          <div className="truncate">
+                            <p className="text-white text-xs font-bold group-hover:text-amber-300 transition-colors truncate">
+                              {landmark.name}
+                            </p>
+                            <p className="text-slate-400 text-[10px] truncate">
+                              {landmark.badge}
+                            </p>
+                          </div>
                         </div>
-                      )}
-                    </div>
-
-                    <p className="text-[12px] text-slate-300 leading-relaxed mb-3">
-                      {displayCity.description}
-                    </p>
-
-                    {/* Highlight tags */}
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {displayCity.highlights.map((h) => (
-                        <span
-                          key={h}
-                          className="text-[10px] px-2 py-0.5 rounded-full font-medium"
-                          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}
-                        >
-                          {h}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* CTA */}
-                    <Link
-                      to={`/city/${displayCity.id}`}
-                      className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold transition-shadow duration-200 group/cta"
-                      style={{
-                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                        color: '#1a0800',
-                        boxShadow: '0 4px 20px rgba(245,158,11,0.35)',
-                      }}
-                    >
-                      <MapPin className="w-3.5 h-3.5" />
-                      <span>Explore {displayCity.name} Tours</span>
-                      <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover/cta:translate-x-1" />
-                    </Link>
+                        <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+                      </button>
+                    ))}
                   </div>
+                </div>
+
+                {/* Quick WhatsApp Concierge Booking */}
+                <div className="mt-5 pt-3 border-t border-slate-800">
+                  <button
+                    onClick={() => handleWhatsAppInquire(currentCity.name)}
+                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer"
+                  >
+                    <Phone className="w-4 h-4" />
+                    <span>Inquire VIP Tours for {currentCity.name}</span>
+                  </button>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Empty-state hint */}
-          {!displayCity && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2 }}
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none"
-            >
-              <p
-                className="text-[11px] font-medium px-3 py-1.5 rounded-full whitespace-nowrap"
-                style={{
-                  color: 'rgba(245,158,11,0.45)',
-                  border: '1px solid rgba(245,158,11,0.12)',
-                  background: 'rgba(0,0,0,0.45)',
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                ✦ Hover or click a destination to explore
-              </p>
-            </motion.div>
-          )}
         </div>
       </div>
     </div>

@@ -360,7 +360,7 @@ export default function Trips() {
                           <span className={`text-lg font-black bg-gradient-to-r ${theme.priceGradient} bg-clip-text text-transparent leading-none`}>
                             {formatPrice(trip.price)}
                           </span>
-                          <span className="text-[10px] font-semibold text-slate-500 ml-0.5">/person</span>
+                          <span className="text-[10px] font-semibold text-slate-500 ml-0.5">{t('trip.perPerson')}</span>
                         </div>
                       </div>
                     </div>
@@ -425,8 +425,8 @@ export default function Trips() {
                         <Link
                           to={`/trip/${trip.id}`}
                           className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-all duration-300 hover:scale-105"
-                          title="View Trip Details"
-                          aria-label="View Trip Details"
+                          title={t('trips.details')}
+                          aria-label={t('trips.details')}
                         >
                           <ArrowRight className="w-4 h-4 text-slate-700 group-hover:translate-x-0.5 transition-transform" />
                         </Link>

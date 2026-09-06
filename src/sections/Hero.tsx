@@ -236,7 +236,7 @@ export default function Hero() {
                 })()}
                 <div className="flex flex-col">
                   <span className="text-white font-extrabold text-xl tracking-tight leading-none drop-shadow-md">{weather.temp}°C</span>
-                  <span className="text-amber-300 text-[11px] font-bold uppercase tracking-wider mt-1">{weather.condition} Air</span>
+                  <span className="text-amber-300 text-[11px] font-bold uppercase tracking-wider mt-1">{t('weather.temp')}</span>
                 </div>
               </div>
 
@@ -247,7 +247,7 @@ export default function Hero() {
                 <Waves className="w-8 h-8 text-cyan-300 animate-pulse-glow drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
                 <div className="flex flex-col">
                   <span className="text-white font-extrabold text-xl tracking-tight leading-none drop-shadow-md">{weather.seaTemp}°C</span>
-                  <span className="text-cyan-300 text-[11px] font-bold uppercase tracking-wider mt-1">Sea Temp</span>
+                  <span className="text-cyan-300 text-[11px] font-bold uppercase tracking-wider mt-1">{t('weather.sea')}</span>
                 </div>
               </div>
 
@@ -294,7 +294,7 @@ export default function Hero() {
             >
               {/* Autoplaying Seamless Loop Video */}
               <video
-                src="/videos/vacation.mp4"
+                src="/videos/1.mp4"
                 autoPlay
                 loop
                 muted
@@ -318,7 +318,7 @@ export default function Hero() {
                 <span className="text-[10px] uppercase font-bold text-cyan-300 tracking-wider">Luxury Diving &amp; Mega Yachts</span>
                 <h4 className="text-lg font-black text-white mb-1 group-hover:text-cyan-200 transition-colors drop-shadow-md">Hurghada Reefs</h4>
                 <div className="flex items-center justify-between pt-1 border-t border-white/15">
-                  <span className="text-xs text-white/80">From <strong className="text-white text-sm font-black">{formatPrice(65)}</strong></span>
+                  <span className="text-xs text-white/80">{t('trips.price')} <strong className="text-white text-sm font-black">{formatPrice(65)}</strong></span>
                   <div className="w-7 h-7 rounded-full bg-cyan-500/30 border border-cyan-400/50 flex items-center justify-center group-hover:bg-cyan-400 group-hover:text-black transition-all">
                     <ChevronRight className="w-4 h-4 text-cyan-200 group-hover:text-black transition-colors" />
                   </div>
@@ -359,7 +359,7 @@ export default function Hero() {
                 <span className="text-[10px] uppercase font-bold text-amber-300 tracking-wider">Private Egyptologist Tours</span>
                 <h4 className="text-lg font-black text-white mb-1 group-hover:text-amber-200 transition-colors drop-shadow-md">Giza &amp; Luxor Temples</h4>
                 <div className="flex items-center justify-between pt-1 border-t border-white/15">
-                  <span className="text-xs text-white/80">From <strong className="text-white text-sm font-black">{formatPrice(85)}</strong></span>
+                  <span className="text-xs text-white/80">{t('trips.price')} <strong className="text-white text-sm font-black">{formatPrice(85)}</strong></span>
                   <div className="w-7 h-7 rounded-full bg-amber-500/30 border border-amber-400/50 flex items-center justify-center group-hover:bg-amber-400 group-hover:text-black transition-all">
                     <ChevronRight className="w-4 h-4 text-amber-200 group-hover:text-black transition-colors" />
                   </div>
@@ -377,7 +377,7 @@ export default function Hero() {
           aria-label="Scroll to trips"
           className="group flex flex-col items-center gap-2 text-white/50 hover:text-gold transition-colors"
         >
-          <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/60 group-hover:text-gold transition-colors">Explore Experiences</span>
+          <span className="text-[10px] uppercase font-bold tracking-[0.25em] text-white/60 group-hover:text-gold transition-colors">{t('hero.cta.explore')}</span>
           <div className="w-5 h-8 rounded-full border-2 border-white/30 group-hover:border-gold/60 flex justify-center pt-1.5 transition-colors">
             <motion.div 
               animate={{ y: [0, 8, 0] }}

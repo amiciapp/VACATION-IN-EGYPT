@@ -1,3 +1,4 @@
+export const TransportRoute = {};
 export interface TransportRoute {
   id: string;
   origin: string;
