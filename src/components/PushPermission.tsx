@@ -69,8 +69,8 @@ export default function PushPermission() {
             </button>
 
             <div className="flex gap-4">
-              <div className="w-12 h-12 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center shrink-0 animate-pulse-slow">
-                <BellRing className="w-6 h-6 text-gold" />
+              <div className="w-12 h-12 rounded-2xl bg-slate-900/90 border border-gold/40 flex items-center justify-center shrink-0 p-1.5 shadow-md">
+                <img src="/logo.png" alt="VACATION IN EGYPT" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h3 className="text-ink font-bold mb-1">Unlock VIP Deals</h3>

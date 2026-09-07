@@ -4,13 +4,13 @@
   "description": "Premium luxury travel experiences and tours in Egypt. Red Sea cruises, historical tours, and more.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1C2C",
-  "theme_color": "#0B1C2C",
+  "background_color": "#08080E",
+  "theme_color": "#08080E",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {

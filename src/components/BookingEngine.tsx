@@ -29,7 +29,10 @@ export default function BookingEngine({ trip }: { trip: Trip; onClose: () => voi
       {/* Header */}
       <div className="p-6 border-b border-white/10 bg-white/[0.03]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-lg font-bold text-white tracking-wide">{t('trip.bookSpot') || 'Instant Reservation'}</h3>
+          <div className="flex items-center gap-2.5">
+            <img src="/logo.png" alt="VACATION IN EGYPT" className="h-7 w-auto object-contain rounded-md" />
+            <h3 className="text-lg font-bold text-white tracking-wide">{t('trip.bookSpot') || 'Instant Reservation'}</h3>
+          </div>
           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gold/15 text-gold border border-gold/30">
             Step {step} of 3
           </span>

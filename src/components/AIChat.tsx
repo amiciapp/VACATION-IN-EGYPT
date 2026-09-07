@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useApp } from '@/context/AppContext';
 import { trips, whatsappNumbers } from '@/data/trips';
@@ -16,7 +16,6 @@ import {
   Sparkles,
   Star,
   Clock,
-  MapPin,
   ChevronRight,
   Maximize2,
   Minimize2,
@@ -24,10 +23,7 @@ import {
   Calendar,
   Phone,
   ShieldCheck,
-  Check,
   Flame,
-  ArrowRight,
-  Crown
 } from 'lucide-react';
 
 interface Message {
@@ -51,10 +47,63 @@ interface LeadInfo {
   specificTrip?: Trip;
 }
 
+interface SpeechRecognitionResultItem {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: {
+    [index: number]: SpeechRecognitionResultItem;
+  };
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface ISpeechRecognition {
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: new () => ISpeechRecognition;
+  webkitSpeechRecognition?: new () => ISpeechRecognition;
+}
+
+function createWelcomeMessage(weather?: { temp: number; seaTemp: number; windSpeed: number; seaStatus: string }): Message {
+  const topPicks = trips.filter(t => t.hot || t.rating >= 4.9).slice(0, 2);
+  const isSeaBreezy = weather ? (weather.windSpeed > 22 || weather.seaStatus.includes('Choppy')) : false;
+  const weatherSnippet = isSeaBreezy
+    ? `Right now, Egypt is a balmy **${weather?.temp ?? 28}°C**, though the Red Sea has a fresh breeze with moderate swells — an absolute paradise for sightseeing, pyramids, or desert adventures!`
+    : `Conditions in Egypt are sublime today: **${weather?.temp ?? 28}°C** with calm, crystal-clear Red Sea waters at **${weather?.seaTemp ?? 24}°C** — perfect for both private yachting and historical exploration!`;
+
+  return {
+    id: 'welcome',
+    role: 'assistant',
+    content: `Welcome to **VACATION IN EGYPT VIP**. ⚜️\n\nI am **Aria**, your Senior Luxury Travel Concierge. Whether you dream of gliding across the Nile in 5-star elegance, private after-hours Pyramids access, or a chartered yacht across the Red Sea, I am here to tailor every detail to perfection.\n\n${weatherSnippet}\n\nHow may I curate your journey today? Tell me what speaks to your heart, or select one of our signature experiences below:`,
+    timestamp: new Date(),
+    recommendedTrips: topPicks,
+    showWhatsAppCta: false,
+    advisory: isSeaBreezy
+      ? {
+          type: 'sea',
+          title: 'Live Concierge Advisory',
+          text: 'Fresh sea breeze today. Ideal for Pyramids, Luxor temples, or Desert Safari.'
+        }
+      : undefined
+  };
+}
+
 export default function AIChat() {
-  const { isChatOpen, setIsChatOpen, setIsWhatsAppOpen, weather, formatPrice } = useApp();
+  const { isChatOpen, setIsChatOpen, weather, formatPrice } = useApp();
   const navigate = useNavigate();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => [createWelcomeMessage(weather)]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
@@ -66,7 +115,7 @@ export default function AIChat() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -74,44 +123,6 @@ export default function AIChat() {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isTyping, isChatOpen]);
-
-  // Initial greeting
-  useEffect(() => {
-    if (isChatOpen && messages.length === 0) {
-      const topPicks = trips.filter(t => t.hot || t.rating >= 4.9).slice(0, 2);
-      
-      const isSeaBreezy = weather.windSpeed > 22 || weather.seaStatus.includes('Choppy');
-      const weatherSnippet = isSeaBreezy
-        ? `Right now, Egypt is a balmy **${weather.temp}°C**, though the Red Sea has a fresh breeze with moderate swells — an absolute paradise for sightseeing, pyramids, or desert adventures!`
-        : `Conditions in Egypt are sublime today: **${weather.temp}°C** with calm, crystal-clear Red Sea waters at **${weather.seaTemp}°C** — perfect for both private yachting and historical exploration!`;
-
-      const welcomeContent = `Welcome to **VACATION IN EGYPT VIP**. ⚜️
-
-I am **Aria**, your Senior Luxury Travel Concierge. Whether you dream of gliding across the Nile in 5-star elegance, private after-hours Pyramids access, or a chartered yacht across the Red Sea, I am here to tailor every detail to perfection.
-
-${weatherSnippet}
-
-How may I curate your journey today? Tell me what speaks to your heart, or select one of our signature experiences below:`;
-
-      setMessages([
-        {
-          id: 'welcome',
-          role: 'assistant',
-          content: welcomeContent,
-          timestamp: new Date(),
-          recommendedTrips: topPicks,
-          showWhatsAppCta: false,
-          advisory: isSeaBreezy
-            ? {
-                type: 'sea',
-                title: 'Live Concierge Advisory',
-                text: 'Fresh sea breeze today. Ideal for Pyramids, Luxor temples, or Desert Safari.'
-              }
-            : undefined
-        }
-      ]);
-    }
-  }, [isChatOpen, weather]);
 
   // Focus trap & accessibility
   useEffect(() => {
@@ -124,20 +135,26 @@ How may I curate your journey today? Tell me what speaks to your heart, or selec
 
   // Speech recognition setup
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
+    if (typeof window !== 'undefined') {
+      const speechWindow = window as unknown as WindowWithSpeechRecognition;
+      const SpeechRecognitionConstructor = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
+      if (SpeechRecognitionConstructor) {
+        const recognition = new SpeechRecognitionConstructor();
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInput(transcript);
-        setIsListening(false);
-      };
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
+          const transcript = event.results[0]?.[0]?.transcript;
+          if (transcript) {
+            setInput(transcript);
+          }
+          setIsListening(false);
+        };
 
-      recognitionRef.current.onerror = () => setIsListening(false);
-      recognitionRef.current.onend = () => setIsListening(false);
+        recognition.onerror = () => setIsListening(false);
+        recognition.onend = () => setIsListening(false);
+        recognitionRef.current = recognition;
+      }
     }
   }, []);
 
@@ -491,8 +508,8 @@ Tell me a bit about what makes your dream trip:
             {/* Bespoke Royal Gold Emblem Avatar */}
             <div className="relative shrink-0">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-300 to-yellow-500 p-[1.5px] shadow-lg shadow-amber-500/25">
-                <div className="w-full h-full rounded-[14px] bg-gradient-to-br from-slate-900 via-slate-950 to-black flex items-center justify-center">
-                  <Crown className="w-5 h-5 text-amber-300 drop-shadow-[0_0_6px_rgba(252,211,77,0.6)]" />
+                <div className="w-full h-full rounded-[14px] bg-gradient-to-br from-slate-900 via-slate-950 to-black flex items-center justify-center p-1 overflow-hidden">
+                  <img src="/logo.png" alt="Vacation in Egypt" className="w-full h-full object-contain" />
                 </div>
               </div>
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-950 shadow-[0_0_8px_rgba(16,185,129,0.9)]" />

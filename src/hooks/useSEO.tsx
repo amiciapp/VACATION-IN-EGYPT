@@ -54,7 +54,8 @@ export function useSEO(cityName?: string, trip?: Trip) {
           "@type": "TravelAgency",
           "name": "VACATION IN EGYPT",
           "telephone": "+201131312402",
-          "url": "https://vacationinegypt.vip"
+          "url": "https://vacationinegypt.vip",
+          "image": "https://vacationinegypt.vip/logo.png"
         }
       },
       "aggregateRating": {

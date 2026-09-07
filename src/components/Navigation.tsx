@@ -140,13 +140,21 @@ export default function Navigation() {
             className="flex items-center gap-3 group relative cursor-pointer"
             aria-label="Vacation in Egypt - Back to Home"
           >
-            <div className="relative">
+            <div className="relative shrink-0">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-teal-400 rounded-2xl opacity-0 group-hover:opacity-75 blur-md transition-all duration-500" />
               <img 
                 src="/logo.png" 
                 alt="VACATION IN EGYPT" 
-                className="relative h-9 w-auto rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.25)] group-hover:scale-105 transition-transform duration-500"
+                className="relative h-11 w-auto rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.25)] group-hover:scale-105 transition-transform duration-500"
               />
+            </div>
+            <div className="flex flex-col text-start select-none">
+              <span className="font-display font-black tracking-[0.16em] text-white text-base sm:text-lg leading-tight group-hover:text-cyan-300 transition-colors duration-300 uppercase">
+                VACATION
+              </span>
+              <span className="font-sans font-bold tracking-[0.26em] text-gold text-[10px] sm:text-xs leading-tight uppercase group-hover:text-amber-300 transition-colors duration-300">
+                IN EGYPT
+              </span>
             </div>
           </Link>
 
@@ -332,6 +340,21 @@ export default function Navigation() {
           aria-label="Mobile navigation"
         >
           <div className="section-padding py-6 space-y-4">
+            <div className="flex items-center gap-3 pb-4 border-b border-white/10">
+              <img 
+                src="/logo.png" 
+                alt="VACATION IN EGYPT" 
+                className="h-10 w-auto rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+              />
+              <div className="flex flex-col text-start">
+                <span className="font-display font-black tracking-[0.16em] text-white text-base leading-tight uppercase">
+                  VACATION
+                </span>
+                <span className="font-sans font-bold tracking-[0.26em] text-gold text-xs leading-tight uppercase">
+                  IN EGYPT
+                </span>
+              </div>
+            </div>
             {navLinks.map((link) => (
               <div key={link.id}>
                 {link.id === 'trips' ? (

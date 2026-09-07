@@ -94,7 +94,7 @@ export default function Footer() {
               onClick={handleLogoClick}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="relative flex items-center gap-3 mb-6 group cursor-pointer"
+              className="relative flex items-center gap-3.5 mb-6 group cursor-pointer"
             >
               {/* Logo glow backlight */}
               <motion.div
@@ -109,9 +109,17 @@ export default function Footer() {
                 loading="lazy"
                 width={64}
                 height={64}
-                className="h-16 w-auto rounded-lg relative z-10"
+                className="h-14 w-auto rounded-lg relative z-10 shrink-0"
                 style={{ filter: 'drop-shadow(0 0 12px rgba(212,175,55,0.4))' }}
               />
+              <div className="flex flex-col text-start relative z-10 select-none">
+                <span className="font-display font-black tracking-[0.16em] text-white text-xl leading-tight group-hover:text-gold-light transition-colors duration-300 uppercase">
+                  VACATION
+                </span>
+                <span className="font-sans font-bold tracking-[0.26em] text-gold text-xs leading-tight uppercase mt-0.5 group-hover:text-white transition-colors duration-300">
+                  IN EGYPT
+                </span>
+              </div>
             </motion.button>
 
             <p className="text-white/40 text-sm leading-relaxed mb-6">
@@ -227,28 +235,34 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3">
               {[
-                { label: t('services.hotels') || 'Luxury Hotels', id: 'services' },
-                { label: t('nav.transport') || 'Airport Transfers', id: 'transportation' },
-                { label: t('services.privateTours') || 'Private Tours', id: 'trips' },
-                { label: t('services.groupBookings') || 'Group Bookings', id: 'services' },
-                { label: t('services.vipConcierge') || 'VIP Concierge', id: 'services' }
-              ].map((link, i) => (
-                <motion.li
-                  key={link.id + i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                >
-                  <motion.button
-                    onClick={() => scrollToSection(link.id)}
-                    whileHover={{ x: 5 }}
-                    className="flex items-center gap-2 text-white/40 hover:text-cyan-400 transition-colors text-sm group cursor-pointer"
+                { label: t('footer.hotels', 'Hotels'), defaultLabel: 'Hotels', id: 'services' },
+                { label: t('nav.transport', 'Private Transportation'), defaultLabel: 'Private Transportation', id: 'transportation' },
+                { label: t('footer.privateTours', 'Private Tours'), defaultLabel: 'Private Tours', id: 'trips' },
+                { label: t('footer.groupBookings', 'Group Bookings'), defaultLabel: 'Group Bookings', id: 'services' },
+                { label: t('footer.vipConcierge', 'VIP Concierge'), defaultLabel: 'VIP Concierge', id: 'services' }
+              ].map((link, i) => {
+                const displayLabel = (!link.label || link.label.startsWith('footer.') || link.label.startsWith('services.'))
+                  ? link.defaultLabel
+                  : link.label;
+
+                return (
+                  <motion.li
+                    key={link.id + i}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.08 }}
                   >
-                    <ChevronRight className="w-3 h-3 text-cyan-500/50 group-hover:text-cyan-400 transition-colors" />
-                    {link.label}
-                  </motion.button>
-                </motion.li>
-              ))}
+                    <motion.button
+                      onClick={() => scrollToSection(link.id)}
+                      whileHover={{ x: 5 }}
+                      className="flex items-center gap-2 text-white/40 hover:text-cyan-400 transition-colors text-sm group cursor-pointer"
+                    >
+                      <ChevronRight className="w-3 h-3 text-cyan-500/50 group-hover:text-cyan-400 transition-colors" />
+                      {displayLabel}
+                    </motion.button>
+                  </motion.li>
+                );
+              })}
             </ul>
           </div>
 
