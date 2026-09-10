@@ -30,3 +30,4 @@ dist-ssr
 
 # Large binary assets - deploy separately via CDN
 public/videos/
+!public/videos/song.mpeg
