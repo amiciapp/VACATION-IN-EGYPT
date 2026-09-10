@@ -20,17 +20,17 @@ export default function PrivacyPolicy() {
         <meta property="og:description" content="Read VACATION IN EGYPT's privacy policy. We are committed to protecting your personal data." />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="VACATION IN EGYPT" />
-        <meta property="og:url" content={baseUrl} />
-        <meta property="og:image" content="https://vacationinegypt.vip/logo.png" />
+        <meta property="og:url" content="https://vacationinegypt.vip/privacy" />
+        <meta property="og:image" content="https://vacationinegypt.vip/logo.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Privacy Policy | VACATION IN EGYPT Luxury Egypt Tours" />
         <meta name="twitter:description" content="Read VACATION IN EGYPT's privacy policy. We protect your personal data." />
-        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.png" />
-        <link rel="canonical" href={baseUrl} />
+        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.jpg" />
+        <link rel="canonical" href="https://vacationinegypt.vip/privacy" />
         {supportedLngs.filter(l => l !== lang).map(l => (
-          <link key={l} rel="alternate" hrefLang={l} href={`${baseUrl}?lang=${l}`} />
+          <link key={l} rel="alternate" hrefLang={l} href={`https://vacationinegypt.vip/privacy?lang=${l}`} />
         ))}
-        <link rel="alternate" hrefLang="x-default" href={baseUrl} />
+        <link rel="alternate" hrefLang="x-default" href="https://vacationinegypt.vip/privacy" />
       </Helmet>
       <Navigation />
       
@@ -106,7 +106,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-bold text-ink mb-4">6. Contact Us</h2>
               <p>
                 If you have any questions about this privacy policy or our privacy practices, please contact 
-                us at: <span className="text-gold">hello@vacationinegypt.com</span>
+                us at: <span className="text-gold">hello@vacationinegypt.vip</span>
               </p>
             </section>
           </div>

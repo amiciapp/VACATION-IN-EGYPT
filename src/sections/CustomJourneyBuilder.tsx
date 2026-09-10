@@ -506,7 +506,7 @@ export default function CustomJourneyBuilder() {
               <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-slate-950 to-slate-900 border border-amber-400/40">
                 <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                   <div className="flex items-center gap-3">
-                    <img src="/logo.png" alt="VACATION IN EGYPT" className="h-8 w-auto object-contain rounded-lg shadow-md" />
+                    <img src="/logo.jpg" alt="VACATION IN EGYPT" className="h-8 w-auto object-contain rounded-lg shadow-md" />
                     <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                       <Crown className="w-4 h-4" />
                       <span>Your Personalized VIP Master Proposal</span>

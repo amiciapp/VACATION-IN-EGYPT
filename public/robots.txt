@@ -1,9 +1,15 @@
 User-agent: *
 Allow: /
 
-# Disallow admin/utility paths
+# Disallow source and build internals
 Disallow: /src/
-Disallow: /*.json$
+Disallow: /node_modules/
+
+# Explicitly allow i18n translation bundles and web app manifest
+Allow: /locales/
+Allow: /manifest.json
+Allow: /images/
+Allow: /videos/
 
 # Sitemap location
 Sitemap: https://vacationinegypt.vip/sitemap.xml

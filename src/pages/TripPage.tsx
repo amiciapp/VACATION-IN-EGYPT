@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navigation from '@/components/Navigation';
 import Footer from '@/sections/Footer';
 import BookingEngine from '@/components/BookingEngine';
+import NotFound from '@/pages/NotFound';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSEO } from '@/hooks/useSEO';
 
@@ -29,18 +30,17 @@ export default function TripPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (!trip) {
-      navigate('/', { replace: true });
-    }
-  }, [trip, navigate]);
+  }, [trip]);
 
   const images = trip?.gallery && trip.gallery.length > 0 ? trip.gallery : (trip ? [trip.image] : []);
 
   const handleNextImg = useCallback(() => {
+    if (images.length === 0) return;
     setActiveImg((prev) => (prev + 1) % images.length);
   }, [images.length]);
 
   const handlePrevImg = useCallback(() => {
+    if (images.length === 0) return;
     setActiveImg((prev) => (prev - 1 + images.length) % images.length);
   }, [images.length]);
 
@@ -55,7 +55,9 @@ export default function TripPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNextImg, handlePrevImg]);
 
-  if (!trip) return null;
+  if (!trip) {
+    return <NotFound />;
+  }
 
   // Check if description has multi-day structure
   const itineraryDays = trip.longDescription.includes('Day 1:')

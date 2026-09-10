@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router';
+import { Routes, Route, useLocation } from 'react-router';
 import { AppProvider, useApp } from '@/context/AppContext';
 import SchemaMarkup from '@/components/SchemaMarkup';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -8,6 +8,7 @@ import CookieConsent from '@/components/CookieConsent';
 import PushPermission from '@/components/PushPermission';
 import LiveBookingTicker from '@/components/LiveBookingTicker';
 import SpotlightSearch from '@/components/SpotlightSearch';
+import BackgroundMusic from '@/components/BackgroundMusic';
 
 function GlobalAppFeatures() {
   const { isSearchOpen, setIsSearchOpen } = useApp();
@@ -29,19 +30,45 @@ const NotFound = lazy(() => import('@/pages/NotFound'));
 const TransportationPage = lazy(() => import('@/pages/TransportationPage'));
 
 export default function App() {
-  const [phase, setPhase] = useState<'loading' | 'fading' | 'done'>('loading');
+  const [phase, setPhase] = useState<'loading' | 'fading' | 'done'>(() => {
+    try {
+      return sessionStorage.getItem('hasSeenIntro') === 'true' ? 'done' : 'loading';
+    } catch {
+      return 'loading';
+    }
+  });
 
   useEffect(() => {
-    // Phase 1: Show Hollywood intro sequence (2.6s)
-    const fadeTimer = setTimeout(() => setPhase('fading'), 2600);
-    // Phase 2: Smooth cinematic dissolve & zoom out (0.8s transition)
-    const doneTimer = setTimeout(() => setPhase('done'), 3400);
+    if (phase === 'done') return;
+
+    try {
+      sessionStorage.setItem('hasSeenIntro', 'true');
+    } catch {
+      // Ignore private browsing storage restrictions
+    }
+
+    // High-impact intro sequence (1.2s reveal, 0.5s dissolve)
+    const fadeTimer = setTimeout(() => setPhase('fading'), 1200);
+    const doneTimer = setTimeout(() => setPhase('done'), 1700);
 
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(doneTimer);
     };
-  }, []);
+  }, [phase]);
+
+  // Global smooth scroll handler for all /#section links across pages
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const timer = setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, location.hash]);
 
   return (
     <ErrorBoundary>
@@ -83,6 +110,9 @@ export default function App() {
 
         {/* Global Live Features: Spotlight Search & Live Booking Ticker */}
         <GlobalAppFeatures />
+
+        {/* Ambient background music — auto-plays & loops */}
+        <BackgroundMusic />
       </AppProvider>
     </ErrorBoundary>
   );

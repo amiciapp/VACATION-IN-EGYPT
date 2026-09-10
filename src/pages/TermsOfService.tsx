@@ -20,17 +20,17 @@ export default function TermsOfService() {
         <meta property="og:description" content="Read VACATION IN EGYPT's Terms of Service. Understand our booking policies and user obligations." />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="VACATION IN EGYPT" />
-        <meta property="og:url" content={baseUrl} />
-        <meta property="og:image" content="https://vacationinegypt.vip/logo.png" />
+        <meta property="og:url" content="https://vacationinegypt.vip/terms" />
+        <meta property="og:image" content="https://vacationinegypt.vip/logo.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Terms of Service | VACATION IN EGYPT Luxury Egypt Tours" />
         <meta name="twitter:description" content="Read VACATION IN EGYPT's Terms of Service. Understand our booking policies." />
-        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.png" />
-        <link rel="canonical" href={baseUrl} />
+        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.jpg" />
+        <link rel="canonical" href="https://vacationinegypt.vip/terms" />
         {supportedLngs.filter(l => l !== lang).map(l => (
-          <link key={l} rel="alternate" hrefLang={l} href={`${baseUrl}?lang=${l}`} />
+          <link key={l} rel="alternate" hrefLang={l} href={`https://vacationinegypt.vip/terms?lang=${l}`} />
         ))}
-        <link rel="alternate" hrefLang="x-default" href={baseUrl} />
+        <link rel="alternate" hrefLang="x-default" href="https://vacationinegypt.vip/terms" />
       </Helmet>
       <Navigation />
       

@@ -115,7 +115,6 @@ export default function Navigation() {
     { id: 'trips', label: t('nav.trips', 'Day Tours') },
     { id: 'vip-packages', label: t('nav.vip_packages', 'VIP Packages') },
     { id: 'custom-journey', label: t('nav.custom_journey', 'Custom Journey') },
-    { id: 'vip-fleet', label: t('nav.vip_fleet', 'Fleet & Fast-Track') },
     { id: 'transport', label: t('nav.transport', 'Transfers') },
   ];
 
@@ -143,9 +142,9 @@ export default function Navigation() {
             <div className="relative shrink-0">
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-teal-400 rounded-2xl opacity-0 group-hover:opacity-75 blur-md transition-all duration-500" />
               <img 
-                src="/logo.png" 
+                src="/logo.jpg" 
                 alt="VACATION IN EGYPT" 
-                className="relative h-11 w-auto rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.25)] group-hover:scale-105 transition-transform duration-500"
+                className="relative h-11 w-auto rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.25)] group-hover:scale-105 transition-transform duration-500 object-contain"
               />
             </div>
             <div className="flex flex-col text-start select-none">
@@ -342,9 +341,9 @@ export default function Navigation() {
           <div className="section-padding py-6 space-y-4">
             <div className="flex items-center gap-3 pb-4 border-b border-white/10">
               <img 
-                src="/logo.png" 
+                src="/logo.jpg" 
                 alt="VACATION IN EGYPT" 
-                className="h-10 w-auto rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                className="h-10 w-auto rounded-xl shadow-[0_0_15px_rgba(6,182,212,0.3)] object-contain"
               />
               <div className="flex flex-col text-start">
                 <span className="font-display font-black tracking-[0.16em] text-white text-base leading-tight uppercase">

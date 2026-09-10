@@ -36,7 +36,7 @@ export const trips: Trip[] = [
   {
     id: "alexandria-citadel-catacombs-library-tour",
     title: "Alexandria VIP Day Tour: Citadel, Catacombs & Ancient Library",
-    description: "Explore the Greco-Roman marvels of the Mediterranean coast â€” the medieval Qaitbay Citadel, Kom El Shoqafa Catacombs, and the world-renowned Bibliotheca Alexandrina.",
+    description: "Explore the Greco-Roman marvels of the Mediterranean coast — the medieval Qaitbay Citadel, Kom El Shoqafa Catacombs, and the world-renowned Bibliotheca Alexandrina.",
     longDescription: "Step into Egypt's legendary Mediterranean pearl with Vacation in Egypt on a private VIP day tour of Alexandria. Founded by Alexander the Great in 331 BC, Alexandria is a breathtaking fusion of Pharaonic, Greek, Roman, and Islamic heritage along the azure coast.\n\nYour day begins with comfortable private air-conditioned VIP transport. Descend into the mysterious 2nd-century Catacombs of Kom El Shoqafa, an underground necropolis blending Roman and Egyptian iconography. Visit Pompey's Pillar, then explore the formidable 15th-century Citadel of Qaitbay standing directly on the site of the ancient Pharos Lighthouse. Complete your journey at the stunning contemporary Bibliotheca Alexandrina, celebrating world knowledge with its vast open reading halls and rare manuscript museums, followed by fresh Mediterranean seafood overlooking the sea.",
     price: 85,
     currency: "EUR",
@@ -50,7 +50,7 @@ export const trips: Trip[] = [
     highlights: [
       "Guided tour of the world-famous Bibliotheca Alexandrina",
       "Citadel of Qaitbay built on the site of the ancient Lighthouse",
-      "Kom El Shoqafa Catacombs â€” one of the Seven Wonders of the Middle Ages",
+      "Kom El Shoqafa Catacombs — one of the Seven Wonders of the Middle Ages",
       "Pompey's Pillar and ancient Serapeum ruins",
       "Scenic Mediterranean Corniche drive with sunset photo stop",
       "Licensed multilingual Egyptologist guide",
@@ -106,7 +106,7 @@ export const trips: Trip[] = [
   {
     id: "abu-simbel-day-trip-plane-cairo",
     title: "Abu Simbel Day Trip by Plane from Cairo",
-    description: "Fly to Nubia and stand before the four colossal statues of Ramses II â€” round-trip domestic flights, licensed Egyptologist guide, and all transfers included.",
+    description: "Fly to Nubia and stand before the four colossal statues of Ramses II — round-trip domestic flights, licensed Egyptologist guide, and all transfers included.",
     longDescription: "Tucked away just 40 km from the Sudanese border, the Abu Simbel temples are one of the most rewarding detours in Egypt, and a same-day flight from Cairo makes them easy to reach even on a short stay. This fully guided day trip with Vacation in Egypt pairs a scenic domestic flight over the Nubian desert with an in-depth tour of Ramses II's rock-cut masterpiece, led by a licensed Egyptologist who brings the temple's 3,000-year history to life.\n\nEnjoy an early morning pickup from your Cairo accommodation before boarding your domestic flight south across Upper Egypt and Lake Nasser. Upon arrival at Abu Simbel, explore the Great Temple of Ramses II with its four towering 20-metre statues, learn the astonishing story of the 1960s UNESCO rescue that relocated the entire complex 65 metres higher, discover the Temple of Queen Nefertari, and hear about the biannual Sun Festival solar alignment before flying comfortably back to Cairo.",
     price: 375,
     currency: "EUR",
@@ -2078,7 +2078,7 @@ export const aiResponses = {
     "If you wish to walk among the shadows of Pharaohs, our Private Pyramids Excursion, led by our senior Egyptologists, provides a depth of insight rarely found elsewhere."
   ],
   priceObjection: [
-    "I appreciate your focus on value. At VACATION IN EGYPT, we invest in absolute excellenceâ€”from our expert guides to our premium fleetâ€”ensuring that your investment yields memories of a lifetime. May I highlight our current seasonal privileges?",
+    "I appreciate your focus on value. At VACATION IN EGYPT, we invest in absolute excellence—from our expert guides to our premium fleet—ensuring that your investment yields memories of a lifetime. May I highlight our current seasonal privileges?",
     "Our experiences are meticulously curated to include every detail for a seamless journey. The value lies in the exclusivity and the peace of mind that only true luxury provides.",
     "We prioritize quality over quantity in every aspect. Should you wish to explore our most prestigious packages, I can certainly outline the exceptional benefits included."
   ],

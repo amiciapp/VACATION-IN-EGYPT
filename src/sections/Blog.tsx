@@ -96,7 +96,14 @@ export default function Blog() {
                     </div>
 
                     <div className="px-7 pb-7 pt-0">
-                      <button className="inline-flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider group/btn hover:text-white transition-colors">
+                      <button 
+                        onClick={() => {
+                          const number = '201131312402';
+                          const msg = encodeURIComponent(`Hello VACATION IN EGYPT! 🇪🇬\n\nI was reading your travel insight: *"${post.title}"* and would love expert recommendations for planning this journey.`);
+                          window.open(`https://wa.me/${number}?text=${msg}`, '_blank');
+                        }}
+                        className="inline-flex items-center gap-2 text-teal-400 text-xs font-bold uppercase tracking-wider group/btn hover:text-white transition-colors cursor-pointer"
+                      >
                         <span>{t('blog.readMore')}</span>
                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-300" />
                       </button>

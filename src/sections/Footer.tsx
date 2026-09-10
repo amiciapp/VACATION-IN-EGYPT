@@ -104,12 +104,12 @@ export default function Footer() {
                 style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.3), transparent)' }}
               />
               <img
-                src="/logo.png"
+                src="/logo.jpg"
                 alt="VACATION IN EGYPT"
                 loading="lazy"
                 width={64}
                 height={64}
-                className="h-14 w-auto rounded-lg relative z-10 shrink-0"
+                className="h-14 w-auto rounded-xl relative z-10 shrink-0 object-contain"
                 style={{ filter: 'drop-shadow(0 0 12px rgba(212,175,55,0.4))' }}
               />
               <div className="flex flex-col text-start relative z-10 select-none">
@@ -310,8 +310,8 @@ export default function Footer() {
                 >
                   <Mail className="w-4 h-4 text-gold" />
                 </motion.div>
-                <a href="mailto:hello@vacationinegypt.com" className="text-white/40 hover:text-gold text-sm transition-colors">
-                  hello@vacationinegypt.com
+                <a href="mailto:hello@vacationinegypt.vip" className="text-white/40 hover:text-gold text-sm transition-colors">
+                  hello@vacationinegypt.vip
                 </a>
               </li>
             </ul>
@@ -352,11 +352,11 @@ export default function Footer() {
                   DESIGNED BY ROMERO'S STUDIOS
                 </motion.span>
                 <span className="text-xs tracking-widest font-bold transition-all duration-300 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 absolute text-white/90 text-center whitespace-nowrap drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]">
-                  +20 122 427 8490 &bull; +20 110 787 1007
+                  +20 122 427 8490 • +20 110 787 1007
                 </span>
                 {/* Invisible spacer to maintain correct width so layout doesn't shift */}
                 <span className="text-xs tracking-widest font-bold invisible pointer-events-none whitespace-nowrap">
-                  +20 122 427 8490 &bull; +20 110 787 1007
+                  +20 122 427 8490 • +20 110 787 1007
                 </span>
               </motion.div>
             </div>

@@ -248,8 +248,8 @@ export default function LoadingScreen() {
             className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl p-1.5 bg-gradient-to-br from-gold/50 via-slate-900/90 to-cyan-950/80 backdrop-blur-2xl border-2 border-gold/60 shadow-[0_0_60px_rgba(212,175,55,0.5)] flex items-center justify-center group"
           >
             <img
-              src="/logo.png"
-              alt="Vacation in Egypt"
+              src="/logo.jpg"
+              alt="VACATION IN EGYPT"
               className="w-full h-full object-contain rounded-2xl drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]"
             />
             {/* Specular Glint Shimmer Sweep */}
@@ -381,7 +381,7 @@ export default function LoadingScreen() {
         className="relative z-20 text-center mb-6"
       >
         <span className="text-[10px] font-mono tracking-[0.35em] text-white/30 uppercase">
-          ALBARAA TRAVEL GROUP · PRIVATE LUXURY FLEET
+          VACATION IN EGYPT · PRIVATE LUXURY FLEET
         </span>
       </motion.div>
     </div>

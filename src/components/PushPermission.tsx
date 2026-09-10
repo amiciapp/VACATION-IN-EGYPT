@@ -30,7 +30,7 @@ export default function PushPermission() {
         if (registration.showNotification) {
           registration.showNotification('Welcome to VIP Deals!', {
             body: 'You will now receive our exclusive luxury travel deals.',
-            icon: '/logo.png',
+            icon: '/logo.jpg',
           });
         }
       }
@@ -70,7 +70,7 @@ export default function PushPermission() {
 
             <div className="flex gap-4">
               <div className="w-12 h-12 rounded-2xl bg-slate-900/90 border border-gold/40 flex items-center justify-center shrink-0 p-1.5 shadow-md">
-                <img src="/logo.png" alt="VACATION IN EGYPT" className="w-full h-full object-contain" />
+                <img src="/logo.jpg" alt="VACATION IN EGYPT" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h3 className="text-ink font-bold mb-1">Unlock VIP Deals</h3>

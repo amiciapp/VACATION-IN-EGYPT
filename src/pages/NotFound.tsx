@@ -17,12 +17,11 @@ export default function NotFound() {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="VACATION IN EGYPT" />
         <meta property="og:url" content={window.location.origin + window.location.pathname} />
-        <meta property="og:image" content="https://vacationinegypt.vip/logo.png" />
+        <meta property="og:image" content="https://vacationinegypt.vip/logo.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="404 - Page Not Found | VACATION IN EGYPT" />
         <meta name="twitter:description" content="The page you are looking for does not exist. Return to VACATION IN EGYPT homepage." />
-        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.png" />
-        <link rel="canonical" href={window.location.origin + '/404'} />
+        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.jpg" />
       </Helmet>
       <Navigation />
       

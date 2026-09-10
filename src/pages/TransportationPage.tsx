@@ -1,4 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
+import { supportedLngs } from '@/i18n';
 import Navigation from '@/components/Navigation';
 import Footer from '@/sections/Footer';
 import FloatingButtons from '@/components/FloatingButtons';
@@ -10,6 +13,9 @@ import { Car, MapPin, ShieldCheck, Clock, Phone, ArrowRight, RefreshCw, Calendar
 import { motion } from 'framer-motion';
 
 export default function TransportationPage() {
+  const { i18n } = useTranslation();
+  const lang = i18n.language?.split('-')[0] || 'en';
+  const baseUrl = 'https://vacationinegypt.vip/transportation';
   // Form State
   const [departure, setDeparture] = useState('');
   const [destination, setDestination] = useState('');
@@ -148,8 +154,55 @@ Thank you! I look forward to your confirmation. 🙏`;
     window.open(`https://wa.me/${whatsappNumber}?text=${encodedText}`, '_blank');
   };
 
+  const transportSchema = {
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    "name": "VACATION IN EGYPT — Private Chauffeur & Airport Transfers",
+    "description": "Premium private airport transfers, luxury chauffeured sedans, VIP Hiace, and coaster buses across Cairo, Hurghada, Luxor, Aswan, and Sharm El Sheikh.",
+    "provider": {
+      "@type": "TravelAgency",
+      "name": "VACATION IN EGYPT",
+      "telephone": "+201131312402",
+      "url": "https://vacationinegypt.vip",
+      "image": "https://vacationinegypt.vip/logo.jpg"
+    },
+    "areaServed": [
+      { "@type": "City", "name": "Hurghada" },
+      { "@type": "City", "name": "Cairo" },
+      { "@type": "City", "name": "Luxor" },
+      { "@type": "City", "name": "Aswan" },
+      { "@type": "City", "name": "Sharm El Sheikh" },
+      { "@type": "City", "name": "Alexandria" }
+    ],
+    "priceRange": "€€",
+    "currenciesAccepted": "EUR, USD, GBP, EGP"
+  };
+
   return (
     <>
+      <Helmet>
+        <title>Private Airport Transfers & Luxury Fleet | VACATION IN EGYPT</title>
+        <meta name="description" content="Book private chauffeured transfers across Egypt. Safe, air-conditioned luxury sedans, VIP Hiace vans, and coaster buses connecting Cairo, Hurghada, Luxor, Aswan, and Sharm El Sheikh." />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={baseUrl} />
+        <meta property="og:title" content="Private Airport Transfers & Luxury Fleet | VACATION IN EGYPT" />
+        <meta property="og:description" content="Book private chauffeured transfers across Egypt. Safe, air-conditioned luxury sedans and VIP Hiace vans." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={baseUrl} />
+        <meta property="og:image" content="https://vacationinegypt.vip/logo.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Private Airport Transfers & Luxury Fleet | VACATION IN EGYPT" />
+        <meta name="twitter:description" content="Book private chauffeured transfers across Egypt." />
+        <meta name="twitter:image" content="https://vacationinegypt.vip/logo.jpg" />
+        {supportedLngs.filter(l => l !== lang).map(l => (
+          <link key={l} rel="alternate" hrefLang={l} href={`${baseUrl}?lang=${l}`} />
+        ))}
+        <link rel="alternate" hrefLang="x-default" href={baseUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(transportSchema)}
+        </script>
+      </Helmet>
+
       <div className="min-h-screen text-ink overflow-x-hidden relative">
         <CustomCursor />
         <ScrollProgress />

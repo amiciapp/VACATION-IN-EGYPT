@@ -25,10 +25,11 @@ export function useSEO(cityName?: string, trip?: Trip) {
     if (cityDesc !== cityDescKey) description = cityDesc;
   }
 
+  const canonicalBaseUrl = 'https://vacationinegypt.vip' + (window.location.pathname.replace(/\/$/, '') || '');
   const baseUrl = (window.location.origin + window.location.pathname).replace(/\/$/, '');
   const ogImage = trip
-    ? `${window.location.origin}${trip.image}`
-    : `${window.location.origin}/images/hero-redsea.jpg`;
+    ? `https://vacationinegypt.vip${trip.image}`
+    : `https://vacationinegypt.vip/logo.jpg`;
 
   // Dynamic Google JSON-LD Structured Data
   const jsonLdData: Record<string, unknown>[] = [];
@@ -40,8 +41,8 @@ export function useSEO(cityName?: string, trip?: Trip) {
       "@type": "TouristTrip",
       "name": trip.title,
       "description": trip.description,
-      "image": `${window.location.origin}${trip.image}`,
-      "url": `${window.location.origin}/trip/${trip.id}`,
+      "image": `https://vacationinegypt.vip${trip.image}`,
+      "url": `https://vacationinegypt.vip/trip/${trip.id}`,
       "touristType": ["Luxury", "Family", "Couples", "VIP"],
       "offers": {
         "@type": "Offer",
@@ -49,13 +50,13 @@ export function useSEO(cityName?: string, trip?: Trip) {
         "priceCurrency": trip.currency || "EUR",
         "availability": "https://schema.org/InStock",
         "validFrom": "2026-01-01",
-        "url": `${window.location.origin}/trip/${trip.id}`,
+        "url": `https://vacationinegypt.vip/trip/${trip.id}`,
         "seller": {
           "@type": "TravelAgency",
           "name": "VACATION IN EGYPT",
           "telephone": "+201131312402",
           "url": "https://vacationinegypt.vip",
-          "image": "https://vacationinegypt.vip/logo.png"
+          "image": "https://vacationinegypt.vip/logo.jpg"
         }
       },
       "aggregateRating": {
@@ -97,7 +98,7 @@ export function useSEO(cityName?: string, trip?: Trip) {
           "@type": "ListItem",
           "position": 3,
           "name": trip.title,
-          "item": `${window.location.origin}/trip/${trip.id}`
+          "item": `https://vacationinegypt.vip/trip/${trip.id}`
         }
       ]
     });
@@ -114,7 +115,7 @@ export function useSEO(cityName?: string, trip?: Trip) {
       <meta property="og:locale" content={languageCode} />
       <meta property="og:type" content={trip ? 'article' : 'website'} />
       <meta property="og:site_name" content="VACATION IN EGYPT" />
-      <meta property="og:url" content={baseUrl} />
+      <meta property="og:url" content={canonicalBaseUrl} />
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
@@ -123,11 +124,11 @@ export function useSEO(cityName?: string, trip?: Trip) {
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
-      <link rel="canonical" href={baseUrl} />
+      <link rel="canonical" href={canonicalBaseUrl} />
       {supportedLngs.filter(l => l !== languageCode).map(l => (
-        <link key={l} rel="alternate" hrefLang={l} href={`${baseUrl}?lang=${l}`} />
+        <link key={l} rel="alternate" hrefLang={l} href={`${canonicalBaseUrl}?lang=${l}`} />
       ))}
-      <link rel="alternate" hrefLang="x-default" href={baseUrl} />
+      <link rel="alternate" hrefLang="x-default" href={canonicalBaseUrl} />
 
       {/* Structured Data Scripts */}
       {jsonLdData.map((schemaObj, index) => (

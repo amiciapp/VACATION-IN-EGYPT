@@ -1,9 +1,9 @@
-const CACHE_NAME = 'vacation-egypt-v3';
+const CACHE_NAME = 'vacation-egypt-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/favicon.svg',
-  '/logo.png',
+  '/logo.jpg',
   '/manifest.json',
   '/images/hero-redsea.jpg'
 ];
@@ -90,7 +90,7 @@ self.addEventListener('push', (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || 'VACATION IN EGYPT', {
       body: data.body,
-      icon: '/logo.png',
+      icon: '/logo.jpg',
       badge: '/favicon.svg',
       vibrate: [100, 50, 100],
       data: { dateOfArrival: Date.now() },

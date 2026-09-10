@@ -86,7 +86,7 @@ function createWelcomeMessage(weather?: { temp: number; seaTemp: number; windSpe
   return {
     id: 'welcome',
     role: 'assistant',
-    content: `Welcome to **VACATION IN EGYPT VIP**. ⚜️\n\nI am **Aria**, your Senior Luxury Travel Concierge. Whether you dream of gliding across the Nile in 5-star elegance, private after-hours Pyramids access, or a chartered yacht across the Red Sea, I am here to tailor every detail to perfection.\n\n${weatherSnippet}\n\nHow may I curate your journey today? Tell me what speaks to your heart, or select one of our signature experiences below:`,
+    content: `Welcome to **VACATION IN EGYPT VIP**. ⚜️\n\nI am **Tamara**, your Senior Luxury Travel Concierge. Whether you dream of gliding across the Nile in 5-star elegance, private after-hours Pyramids access, or a chartered yacht across the Red Sea, I am here to tailor every detail to perfection.\n\n${weatherSnippet}\n\nHow may I curate your journey today? Tell me what speaks to your heart, or select one of our signature experiences below:`,
     timestamp: new Date(),
     recommendedTrips: topPicks,
     showWhatsAppCta: false,
@@ -458,7 +458,7 @@ Tell me a bit about what makes your dream trip:
 
   const handleConnectWhatsApp = (tripTitle?: string) => {
     const phone = whatsappNumbers[0].replace(/[^0-9]/g, '');
-    let msg = `Hello VACATION IN EGYPT VIP Concierge! I am chatting with Aria on your website.`;
+    let msg = `Hello VACATION IN EGYPT VIP Concierge! I am chatting with Tamara on your website.`;
     if (tripTitle) {
       msg += ` I would love to check VIP availability and exclusive rates for: *${tripTitle}*.`;
     } else if (lead.specificTrip) {
@@ -509,7 +509,7 @@ Tell me a bit about what makes your dream trip:
             <div className="relative shrink-0">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-300 to-yellow-500 p-[1.5px] shadow-lg shadow-amber-500/25">
                 <div className="w-full h-full rounded-[14px] bg-gradient-to-br from-slate-900 via-slate-950 to-black flex items-center justify-center p-1 overflow-hidden">
-                  <img src="/logo.png" alt="Vacation in Egypt" className="w-full h-full object-contain" />
+                  <img src="/logo.jpg" alt="VACATION IN EGYPT" className="w-full h-full object-contain" />
                 </div>
               </div>
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-950 shadow-[0_0_8px_rgba(16,185,129,0.9)]" />
@@ -518,7 +518,7 @@ Tell me a bit about what makes your dream trip:
             {/* Title & Status */}
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="text-white font-bold text-sm tracking-tight">Aria</h3>
+                <h3 className="text-white font-bold text-sm tracking-tight">Tamara</h3>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 text-[10px] font-bold border border-amber-400/30 whitespace-nowrap tracking-wider uppercase">
                   <Sparkles className="w-2.5 h-2.5 text-amber-300" />
                   VIP Concierge
@@ -798,7 +798,7 @@ Tell me a bit about what makes your dream trip:
                 </div>
               </div>
               <div className="rounded-2xl bg-slate-900/90 border border-slate-800 px-4 py-3 rounded-tl-none flex items-center gap-1.5 shadow-sm">
-                <span className="text-xs text-slate-400 font-medium mr-1">Aria is typing</span>
+                <span className="text-xs text-slate-400 font-medium mr-1">Tamara is typing</span>
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce [animation-delay:0ms]" />
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce [animation-delay:150ms]" />
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-bounce [animation-delay:300ms]" />
@@ -844,7 +844,7 @@ Tell me a bit about what makes your dream trip:
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-              placeholder={isListening ? 'Listening to your voice...' : 'Ask Aria about any trip, weather, or pricing...'}
+              placeholder={isListening ? 'Listening to your voice...' : 'Ask Tamara about any trip, weather, or pricing...'}
               aria-label="Message your VIP concierge"
               className="flex-1 bg-transparent text-white text-xs md:text-sm placeholder:text-slate-500 focus:outline-none"
             />

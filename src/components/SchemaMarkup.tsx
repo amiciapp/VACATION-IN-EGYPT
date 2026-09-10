@@ -25,34 +25,67 @@ export default function SchemaMarkup() {
     "name": "VACATION IN EGYPT",
     "alternateName": "Vacation In Egypt",
     "url": "https://vacationinegypt.vip",
-    "logo": "https://vacationinegypt.vip/logo.png",
-    "image": "https://vacationinegypt.vip/logo.png",
-    "description": "Luxury travel experiences in Egypt, specializing in Red Sea cruises, yacht charters, desert safaris, historical tours, and premium excursions from Hurghada.",
+    "logo": "https://vacationinegypt.vip/logo.jpg",
+    "image": "https://vacationinegypt.vip/logo.jpg",
+    "description": "Premier luxury travel agency in Egypt, specializing in private Red Sea yacht charters, Nile cruises, VIP Cairo Pyramids access, and bespoke multi-day expeditions across Hurghada, Cairo, Luxor, Aswan, Sharm El Sheikh, and Alexandria.",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Hurghada Marina",
+      "streetAddress": "Hurghada Marina Boulevard",
       "addressLocality": "Hurghada",
       "addressRegion": "Red Sea Governorate",
       "postalCode": "84511",
       "addressCountry": "EG"
     },
     "telephone": "+201131312402",
+    "email": "hello@vacationinegypt.vip",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+201131312402",
       "contactType": "customer service",
-      "areaServed": ["EG", "US", "GB", "DE", "FR", "RU", "IT", "ES"],
+      "areaServed": ["EG", "US", "GB", "DE", "FR", "RU", "IT", "ES", "CH", "AT", "NL", "BE", "AE", "SA"],
       "availableLanguage": availableLanguage
     },
-    "priceRange": "$$$",
+    "priceRange": "$$$$",
     "currenciesAccepted": "USD, EUR, GBP, EGP",
-    "paymentAccepted": "Cash, Credit Card, WhatsApp Pay",
-    "openingHours": "Mo-Su 07:00-22:00",
+    "paymentAccepted": "Cash, Credit Card, WhatsApp Pay, Wire Transfer",
+    "openingHours": "Mo-Su 00:00-24:00",
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": "27.2579",
-      "longitude": "33.8116"
+      "latitude": 27.2579,
+      "longitude": 33.8116
     },
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Hurghada",
+        "geo": { "@type": "GeoCoordinates", "latitude": 27.2579, "longitude": 33.8116 }
+      },
+      {
+        "@type": "City",
+        "name": "Cairo & Giza",
+        "geo": { "@type": "GeoCoordinates", "latitude": 29.9792, "longitude": 31.1342 }
+      },
+      {
+        "@type": "City",
+        "name": "Luxor",
+        "geo": { "@type": "GeoCoordinates", "latitude": 25.6872, "longitude": 32.6396 }
+      },
+      {
+        "@type": "City",
+        "name": "Aswan",
+        "geo": { "@type": "GeoCoordinates", "latitude": 24.0889, "longitude": 32.8998 }
+      },
+      {
+        "@type": "City",
+        "name": "Sharm El Sheikh",
+        "geo": { "@type": "GeoCoordinates", "latitude": 27.9158, "longitude": 34.3299 }
+      },
+      {
+        "@type": "City",
+        "name": "Alexandria",
+        "geo": { "@type": "GeoCoordinates", "latitude": 31.2001, "longitude": 29.9187 }
+      }
+    ],
     "sameAs": [
       "https://www.instagram.com/vacationinegypt",
       "https://www.facebook.com/vacationinegypt",

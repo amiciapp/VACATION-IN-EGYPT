@@ -235,7 +235,7 @@ export default function VIPPackages() {
                 </button>
 
                 <div className="flex items-center gap-3 mb-2">
-                  <img src="/logo.png" alt="VACATION IN EGYPT" className="h-7 w-auto object-contain rounded-md" />
+                  <img src="/logo.jpg" alt="VACATION IN EGYPT" className="h-7 w-auto object-contain rounded-md" />
                   <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                     <Crown className="w-3.5 h-3.5" />
                     <span>VIP Signature Master Itinerary</span>
